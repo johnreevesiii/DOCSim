@@ -1,0 +1,1276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DOC Horse Breeder - Mobile (Rev C/D)</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto+Condensed:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Roboto Condensed', sans-serif;
+      background: linear-gradient(135deg, #1a472a 0%, #2d5a3d 50%, #1a472a 100%);
+      min-height: 100vh;
+      color: #fff;
+    }
+    .container { max-width: 1400px; margin: 0 auto; padding: 20px; }
+    header {
+      text-align: center;
+      padding: 20px 0 30px;
+      border-bottom: 3px solid #c9a227;
+      margin-bottom: 18px;
+    }
+    h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 3rem;
+      color: #c9a227;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+      letter-spacing: 3px;
+    }
+    .subtitle { font-size: 1.1rem; color: #a0c4a0; margin-top: 6px; }
+
+    .revision-selector {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 15px;
+      margin: 18px 0 14px;
+      padding: 15px;
+      background: rgba(0,0,0,0.3);
+      border-radius: 10px;
+      flex-wrap: wrap;
+    }
+    .revision-selector label {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.4rem;
+      color: #c9a227;
+      letter-spacing: 2px;
+    }
+    .revision-selector select {
+      font-family: 'Roboto Condensed', sans-serif;
+      font-size: 1.1rem;
+      padding: 10px 20px;
+      border: 2px solid #c9a227;
+      border-radius: 8px;
+      background: #1a472a;
+      color: #fff;
+      cursor: pointer;
+      min-width: 250px;
+    }
+    .revision-selector select:focus { outline: none; box-shadow: 0 0 10px rgba(201, 162, 39, 0.5); }
+    .revision-info {
+      font-size: 0.9rem;
+      color: #a0c4a0;
+      padding: 6px 14px;
+      background: rgba(0,0,0,0.2);
+      border-radius: 999px;
+      border: 1px solid rgba(201,162,39,0.35);
+    }
+
+    /* Mode Tabs (placed where you marked in screenshot) */
+    .mode-tabs {
+      display: flex;
+      justify-content: center;
+      margin: 10px 0 22px;
+    }
+    .tabbar {
+      display: inline-flex;
+      gap: 8px;
+      padding: 8px;
+      background: rgba(0,0,0,0.25);
+      border-radius: 999px;
+      border: 1px solid rgba(201,162,39,0.3);
+    }
+    .tabbtn {
+      appearance: none;
+      border: 1px solid rgba(201,162,39,0.35);
+      background: rgba(26,71,42,0.85);
+      color: #fff;
+      padding: 10px 16px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      transition: transform 120ms ease, background 120ms ease, box-shadow 120ms ease;
+    }
+    .tabbtn:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(0,0,0,0.25); }
+    .tabbtn.active {
+      background: rgba(201,162,39,0.18);
+      border-color: #c9a227;
+      box-shadow: 0 0 0 3px rgba(201,162,39,0.18);
+    }
+    .tabhint {
+      text-align: center;
+      color: #a0c4a0;
+      font-size: 0.95rem;
+      margin-top: 8px;
+    }
+
+    .panel {
+      background: rgba(0,0,0,0.22);
+      border: 1px solid rgba(61,107,79,0.7);
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 18px;
+    }
+    .panel-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.4rem;
+      color: #c9a227;
+      letter-spacing: 2px;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+    .panel-sub {
+      text-align: center;
+      color: #a0c4a0;
+      margin-bottom: 10px;
+      font-size: 0.95rem;
+      line-height: 1.35;
+    }
+
+    .notice {
+      display: none;
+      margin: 0 0 16px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: rgba(201,162,39,0.12);
+      border: 1px solid rgba(201,162,39,0.55);
+      color: #fff;
+    }
+    .notice strong { color: #c9a227; }
+    .notice.error {
+      background: rgba(231, 76, 60, 0.10);
+      border-color: rgba(231, 76, 60, 0.55);
+    }
+
+    .filters {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 12px;
+      align-items: end;
+    }
+    .field {
+      grid-column: span 3;
+      background: rgba(0,0,0,0.18);
+      border: 1px solid rgba(61,107,79,0.65);
+      border-radius: 12px;
+      padding: 12px;
+    }
+    .field.span-4 { grid-column: span 4; }
+    .field.span-6 { grid-column: span 6; }
+    .field.span-12 { grid-column: span 12; }
+    .field label {
+      display: block;
+      color: #a0c4a0;
+      font-weight: 700;
+      font-size: 0.92rem;
+      margin-bottom: 6px;
+    }
+    .field select, .field input[type="checkbox"] {
+      width: 100%;
+    }
+    .field select {
+      padding: 10px 12px;
+      border: 2px solid rgba(201,162,39,0.6);
+      border-radius: 10px;
+      background: #1a472a;
+      color: #fff;
+      font-size: 1rem;
+    }
+    .field select:focus { outline: none; box-shadow: 0 0 10px rgba(201, 162, 39, 0.5); }
+    .field small {
+      display: block;
+      margin-top: 6px;
+      color: #cfcfcf;
+      opacity: 0.9;
+      line-height: 1.25;
+    }
+    .checkrow {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 4px;
+    }
+    .checkrow input { width: auto; transform: scale(1.15); }
+    .btnrow {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      margin-top: 10px;
+    }
+    .btn {
+      border: 1px solid rgba(201,162,39,0.55);
+      background: rgba(0,0,0,0.25);
+      color: #fff;
+      padding: 10px 14px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 700;
+    }
+    .btn:hover { box-shadow: 0 6px 18px rgba(0,0,0,0.22); transform: translateY(-1px); }
+    .btn.primary {
+      background: rgba(201,162,39,0.16);
+      border-color: #c9a227;
+    }
+
+    .selection-panel {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 30px;
+      align-items: start;
+      margin-bottom: 18px;
+    }
+    .horse-selector {
+      background: rgba(0,0,0,0.4);
+      border-radius: 15px;
+      padding: 25px;
+      border: 2px solid #3d6b4f;
+    }
+    .horse-selector h2 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.8rem;
+      color: #c9a227;
+      margin-bottom: 15px;
+      text-align: center;
+      letter-spacing: 2px;
+    }
+    .horse-selector select {
+      width: 100%;
+      padding: 12px;
+      font-size: 1rem;
+      font-family: 'Roboto Condensed', sans-serif;
+      border: 2px solid #c9a227;
+      border-radius: 10px;
+      background: #1a472a;
+      color: #fff;
+      cursor: pointer;
+      margin-bottom: 16px;
+    }
+    .horse-selector select:focus { outline: none; box-shadow: 0 0 10px rgba(201, 162, 39, 0.5); }
+
+    .breed-symbol {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding-top: 50px;
+    }
+    .breed-symbol .times {
+      font-size: 4rem;
+      color: #c9a227;
+      font-weight: bold;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+    }
+
+    .stats-display {
+      background: rgba(0,0,0,0.2);
+      border-radius: 10px;
+      padding: 15px;
+    }
+    .stats-display h3 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.2rem;
+      color: #a0c4a0;
+      margin-bottom: 12px;
+      text-align: center;
+    }
+    .stat-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    .stat-row:last-child { border-bottom: none; }
+    .stat-name { font-size: 0.95rem; color: #ccc; }
+    .stat-value {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: bold;
+    }
+    .stat-value .num { color: #fff; font-size: 1.1rem; min-width: 28px; text-align: right; }
+    .stat-value .sym { font-size: 1.35rem; font-weight: bold; }
+
+    /* Symbol colors */
+    .symbol-double { color: #ffd700; }
+    .symbol-circle { color: #4CAF50; }
+    .symbol-triangle { color: #2196F3; }
+    .symbol-x { color: #9e9e9e; }
+
+    /* AC badges */
+    .ac-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.78rem;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.2);
+      opacity: 0.95;
+      white-space: nowrap;
+    }
+    .ac-turf { background: rgba(46, 204, 113, 0.18); border-color: rgba(46, 204, 113, 0.45); }
+    .ac-mixed { background: rgba(201,162,39,0.14); border-color: rgba(201,162,39,0.45); }
+    .ac-dirt { background: rgba(230,126,34,0.14); border-color: rgba(230,126,34,0.50); }
+    .ac-dirtgood { background: rgba(142,90,43,0.18); border-color: rgba(142,90,43,0.55); }
+    .ac-max { background: rgba(241,196,15,0.18); border-color: rgba(241,196,15,0.75); }
+
+    /* Foal Results */
+    .foal-results {
+      background: linear-gradient(135deg, rgba(201,162,39,0.2) 0%, rgba(0,0,0,0.4) 100%);
+      border: 3px solid #c9a227;
+      border-radius: 20px;
+      padding: 30px;
+    }
+    .foal-results h2 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2.2rem;
+      color: #c9a227;
+      text-align: center;
+      margin-bottom: 25px;
+      letter-spacing: 3px;
+    }
+    .foal-results.empty {
+      text-align: center;
+      color: #a0c4a0;
+      font-style: italic;
+      padding: 40px;
+    }
+    .section-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.3rem;
+      color: #c9a227;
+      text-align: center;
+      padding: 10px 0;
+      border-bottom: 2px solid #3d6b4f;
+      margin-bottom: 20px;
+      letter-spacing: 2px;
+    }
+    .base-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 15px;
+      margin-bottom: 26px;
+    }
+    .internal-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 15px;
+    }
+    .stat-card {
+      background: rgba(0,0,0,0.3);
+      border-radius: 12px;
+      padding: 18px 14px;
+      text-align: center;
+      border: 2px solid #3d6b4f;
+    }
+    .stat-card .label {
+      font-size: 0.75rem;
+      color: #a0c4a0;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 10px;
+    }
+    .stat-card .value { font-size: 1.6rem; font-weight: bold; color: #fff; }
+    .stat-card .symbol { font-size: 2rem; font-weight: bold; margin-top: 8px; }
+    .stat-card .subline { margin-top: 8px; }
+
+    /* Suggested pairs */
+    .pairs {
+      margin-top: 10px;
+      overflow: hidden;
+    }
+    .pairs table {
+      width: 100%;
+      border-collapse: collapse;
+      overflow: hidden;
+      border-radius: 12px;
+      border: 1px solid rgba(61,107,79,0.65);
+      background: rgba(0,0,0,0.18);
+    }
+    .pairs th, .pairs td {
+      padding: 10px 10px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      text-align: left;
+      font-size: 0.95rem;
+    }
+    .pairs th {
+      color: #c9a227;
+      font-weight: 700;
+      letter-spacing: 1px;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.05rem;
+    }
+    .pairs tr:hover {
+      background: rgba(201,162,39,0.10);
+      cursor: pointer;
+    }
+    .pairs td.mono { font-variant-numeric: tabular-nums; }
+    .pairs .scorepill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 44px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(201,162,39,0.55);
+      background: rgba(201,162,39,0.12);
+      font-weight: 700;
+    }
+
+    /* Legend */
+    .legend {
+      margin-top: 22px;
+      background: rgba(0,0,0,0.3);
+      border-radius: 10px;
+      padding: 18px;
+      text-align: center;
+    }
+    .legend h3 {
+      font-family: 'Bebas Neue', sans-serif;
+      color: #c9a227;
+      margin-bottom: 12px;
+      letter-spacing: 2px;
+    }
+    .legend-items {
+      display: flex;
+      justify-content: center;
+      gap: 34px;
+      flex-wrap: wrap;
+    }
+    .legend-item { display: flex; align-items: center; gap: 10px; }
+    .legend-item .symbol { font-size: 1.5rem; font-weight: bold; }
+    .legend-item .range { color: #ccc; font-size: 0.9rem; }
+    .ac-legend {
+      margin-top: 14px;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      background: rgba(0,0,0,0.62);
+      z-index: 9999;
+    }
+    .modal {
+      width: min(720px, 96vw);
+      background: #123820;
+      border: 2px solid rgba(201,162,39,0.75);
+      border-radius: 16px;
+      padding: 18px 16px;
+      box-shadow: 0 16px 50px rgba(0,0,0,0.45);
+    }
+    .modal h4 {
+      font-family: 'Bebas Neue', sans-serif;
+      color: #c9a227;
+      letter-spacing: 2px;
+      font-size: 1.5rem;
+      margin-bottom: 8px;
+      text-align: center;
+    }
+    .modal p {
+      color: #fff;
+      line-height: 1.35;
+      font-size: 1.02rem;
+      margin-bottom: 14px;
+      text-align: center;
+    }
+    .modal .btnrow { justify-content: center; }
+
+    @media (max-width: 1200px) {
+      .internal-stats-grid { grid-template-columns: repeat(3, 1fr); }
+      .field { grid-column: span 4; }
+      .field.span-6 { grid-column: span 12; }
+    }
+    @media (max-width: 900px) {
+      .selection-panel { grid-template-columns: 1fr; }
+      .breed-symbol { padding: 10px 0; }
+      .breed-symbol .times { font-size: 2.5rem; }
+      .base-stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .filters { grid-template-columns: repeat(6, 1fr); }
+      .field { grid-column: span 6; }
+      .field.span-4 { grid-column: span 6; }
+      .field.span-12 { grid-column: span 6; }
+    }
+    @media (max-width: 600px) {
+      h1 { font-size: 2rem; }
+      .internal-stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .legend-items { gap: 18px; }
+      .revision-selector { flex-direction: column; }
+      .filters { grid-template-columns: repeat(1, 1fr); }
+      .field, .field.span-4, .field.span-6, .field.span-12 { grid-column: span 1; }
+    }
+  
+    /* =========================
+       Mobile-first scale tweaks
+       ========================= */
+    body { font-size: 15px; }
+    .container { max-width: 820px; padding: 12px; }
+    header { padding: 12px 0 16px; margin-bottom: 14px; }
+    h1 { font-size: 2.15rem; letter-spacing: 2px; }
+    .subtitle { font-size: 1.0rem; }
+
+    .revision-selector { padding: 12px; margin: 14px 0 10px; }
+    .revision-selector label { font-size: 1.25rem; }
+    .revision-selector select { min-width: 220px; font-size: 1.0rem; padding: 10px 14px; }
+
+    .mode-tabs { margin: 8px 0 14px; }
+    .tabbtn { padding: 9px 14px; font-size: 0.98rem; }
+    .tabhint { font-size: 0.92rem; margin-top: 6px; }
+
+    .panel { padding: 12px; border-radius: 12px; }
+    .panel-title { font-size: 1.25rem; }
+    .panel-sub { font-size: 0.92rem; }
+
+    /* Make filters single-column by default; expand at larger widths */
+    .filters { grid-template-columns: 1fr; }
+    .field, .field.span-4, .field.span-6, .field.span-12 { grid-column: span 1; }
+
+    /* Selection panel is stacked by default (mobile) */
+    .selection-panel { grid-template-columns: 1fr; gap: 14px; }
+    .breed-symbol { padding: 0; }
+    .breed-symbol .times { font-size: 2.2rem; }
+
+    .horse-selector { padding: 16px; border-radius: 14px; }
+    .horse-selector h2 { font-size: 1.55rem; margin-bottom: 10px; }
+    .horse-selector select { padding: 12px; margin-bottom: 12px; }
+
+    .stats-display { padding: 12px; }
+    .stat-row { padding: 7px 0; }
+    .stat-value .sym { font-size: 1.25rem; }
+
+    .foal-results { padding: 18px; border-radius: 16px; }
+    .foal-results h2 { font-size: 1.9rem; margin-bottom: 16px; }
+    .section-title { font-size: 1.15rem; margin-bottom: 14px; }
+    .base-stats-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .internal-stats-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .stat-card { padding: 12px 10px; }
+    .stat-card .value { font-size: 1.35rem; }
+    .stat-card .symbol { font-size: 1.7rem; }
+
+    /* Make the matches table scrollable on small screens */
+    .pairs { overflow-x: auto; }
+    .pairs table { min-width: 680px; }
+    .pairs th, .pairs td { padding: 9px 9px; }
+
+    /* Desktop enhancements */
+    @media (min-width: 900px) {
+      .container { max-width: 1400px; padding: 20px; }
+      h1 { font-size: 3rem; letter-spacing: 3px; }
+      .selection-panel { grid-template-columns: 1fr auto 1fr; gap: 30px; }
+      .breed-symbol { padding-top: 50px; }
+      .breed-symbol .times { font-size: 4rem; }
+      .filters { grid-template-columns: repeat(12, 1fr); }
+      .field { grid-column: span 3; }
+      .field.span-4 { grid-column: span 4; }
+      .field.span-6 { grid-column: span 6; }
+      .field.span-12 { grid-column: span 12; }
+      .internal-stats-grid { grid-template-columns: repeat(6, 1fr); }
+      .base-stats-grid { grid-template-columns: repeat(4, 1fr); }
+      .pairs table { min-width: unset; }
+    }
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🏇 DOC Horse Breeder 🏇</h1>
+      <p class="subtitle">Foal Stat Calculator - All Game Revisions</p>
+    </header>
+
+    <div class="revision-selector">
+      <label for="revision">SELECT REVISION:</label>
+      <select id="revision">
+        <option value="revC">DOCWE (Rev C)</option>
+        <option value="revD" selected>DOCEX (Rev D)</option>
+      </select>
+      <span class="revision-info" id="revisionInfo">--</span>
+    </div>
+
+    <div class="mode-tabs" aria-label="mode tabs">
+      <div class="tabbar" role="tablist">
+        <button class="tabbtn active" id="tabSimple" role="tab" aria-selected="true" aria-controls="modeSimple">Simple</button>
+        <button class="tabbtn" id="tabAdvanced" role="tab" aria-selected="false" aria-controls="modeAdvanced">Advanced</button>
+      </div>
+    </div>
+    <div class="tabhint" id="tabHint">
+      Simple: pick a sire and dam. Advanced: pick your breeding goals and see best matches.
+    </div>
+
+    <div id="notice" class="notice"></div>
+
+    <!-- ADVANCED FILTERS (hidden in Simple mode) -->
+    <div id="modeAdvanced" style="display:none;">
+      
+      <div class="panel">
+        <div class="panel-title">Breeding Goals (Horse Internal Stats)</div>
+        <div class="panel-sub">
+          Choose what you want the <strong>foal</strong> to look like (not the parents). If your goals are too strict (e.g., “high everything”), the tool will tell you and show the closest matches.
+        </div>
+
+        <div class="filters">
+          <div class="field span-4">
+            <label for="goalSpeed">Foal Speed (SP)</label>
+            <select id="goalSpeed">
+              <option value="any" selected>Any</option>
+              <option value="high">High (45+)</option>
+              <option value="mid">Mid (35–44)</option>
+              <option value="low">Low (0–34)</option>
+            </select>
+</div>
+
+          <div class="field span-4">
+            <label for="goalSharp">Foal Sharp (SH)</label>
+            <select id="goalSharp">
+              <option value="any" selected>Any</option>
+              <option value="high">High (45+)</option>
+              <option value="mid">Mid (35–44)</option>
+              <option value="low">Low (0–34)</option>
+            </select>
+          </div>
+
+          <div class="field span-4">
+            <label for="goalStam">Foal Stamina (ST)</label>
+            <select id="goalStam">
+              <option value="any" selected>Any</option>
+              <option value="high">High (45+)</option>
+              <option value="mid">Mid (35–44)</option>
+              <option value="low">Low (0–34)</option>
+            </select>
+          </div>
+
+          <div class="field span-6">
+            <label for="goalAC">Foal Dirt / Track Condition (AC)</label>
+            <select id="goalAC">
+              <option value="any" selected>Any</option>
+              <option value="turf">Turf Pure (0–63)</option>
+              <option value="mixed">Mixed (64–212)</option>
+              <option value="dirt">Dirt Lean / Poor Track Ready (213–254)</option>
+              <option value="max">Dirt Max (255)</option>
+            </select>
+</div>
+
+          <div class="field span-6">
+            <label>Tip</label>
+            <small>
+              For beginners: start with one or two goals (e.g., High Speed + one ◎ internal). If results are empty, loosen one goal at a time.
+            </small>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title">Breeding Goals (Horse External Stats)</div>
+        <div class="panel-sub">
+          Pick the symbol you want the foal to land on for each external stat (Start/Corner/OOB/Competing/Tenacious/Spurt). Leave as “Any” to ignore a stat.
+        </div>
+
+        <div class="filters">
+          <div class="field">
+            <label for="symStart">Start</label>
+            <select id="symStart">
+              <option value="any" selected>Any</option>
+              <option value="double">◎</option>
+              <option value="circle">○</option>
+              <option value="tri">△</option>
+              <option value="x">✕</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="symCorner">Corner</label>
+            <select id="symCorner">
+              <option value="any" selected>Any</option>
+              <option value="double">◎</option>
+              <option value="circle">○</option>
+              <option value="tri">△</option>
+              <option value="x">✕</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="symOob">Out of Box</label>
+            <select id="symOob">
+              <option value="any" selected>Any</option>
+              <option value="double">◎</option>
+              <option value="circle">○</option>
+              <option value="tri">△</option>
+              <option value="x">✕</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="symComp">Competing</label>
+            <select id="symComp">
+              <option value="any" selected>Any</option>
+              <option value="double">◎</option>
+              <option value="circle">○</option>
+              <option value="tri">△</option>
+              <option value="x">✕</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="symTen">Tenacious</label>
+            <select id="symTen">
+              <option value="any" selected>Any</option>
+              <option value="double">◎</option>
+              <option value="circle">○</option>
+              <option value="tri">△</option>
+              <option value="x">✕</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="symSpurt">Spurt</label>
+            <select id="symSpurt">
+              <option value="any" selected>Any</option>
+              <option value="double">◎</option>
+              <option value="circle">○</option>
+              <option value="tri">△</option>
+              <option value="x">✕</option>
+            </select>
+          </div>
+
+          <div class="field span-12">
+            <div class="checkrow">
+              <input id="alertOnNoPerfect" type="checkbox" checked />
+              <label for="alertOnNoPerfect" style="margin:0;">Show an alert if no breeding pairs meet all selected goals</label>
+            </div>
+            <div class="btnrow">
+              <button class="btn primary" id="btnApplyFilters">Apply / Refresh Matches</button>
+              <button class="btn" id="btnResetFilters">Reset Goals</button>
+            </div>
+          </div>
+        </div>
+      </div>
+<div class="panel pairs">
+        <div class="panel-title">Best Matches (Click a row to select that pair)</div>
+        <div class="panel-sub" id="pairsSub">Set goals above to generate ranked breeding pairs.</div>
+        <div id="pairsTable"></div>
+      </div>
+    </div>
+
+    <!-- SHARED SELECTION UI -->
+    <div id="modeSimple">
+      <!-- Simple mode intentionally has no extra filters -->
+    </div>
+
+    <div class="selection-panel">
+      <div class="horse-selector">
+        <h2>🐴 Select Sire</h2>
+        <select id="sireSelect"><option value="">-- Choose a Sire --</option></select>
+        <div class="stats-display" id="sireStats">
+          <h3>Sire Stats</h3>
+          <p style="text-align:center; color:#888; font-style:italic; padding: 20px 0;">Select a sire to view stats</p>
+        </div>
+      </div>
+
+      <div class="breed-symbol"><span class="times">×</span></div>
+
+      <div class="horse-selector">
+        <h2>🐴 Select Dam</h2>
+        <select id="damSelect"><option value="">-- Choose a Dam --</option></select>
+        <div class="stats-display" id="damStats">
+          <h3>Dam Stats</h3>
+          <p style="text-align:center; color:#888; font-style:italic; padding: 20px 0;">Select a dam to view stats</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="foal-results empty" id="foalResults">
+      <p>Select both a Sire and Dam to calculate foal stats</p>
+    </div>
+
+    <div class="legend">
+      <h3>Symbol Guide (Game Accurate)</h3>
+      <div class="legend-items">
+        <div class="legend-item"><span class="symbol symbol-double">◎</span><span class="range">13–15 (Best)</span></div>
+        <div class="legend-item"><span class="symbol symbol-circle">○</span><span class="range">9–12</span></div>
+        <div class="legend-item"><span class="symbol symbol-triangle">△</span><span class="range">5–8</span></div>
+        <div class="legend-item"><span class="symbol symbol-x">✕</span><span class="range">0–4 (Worst)</span></div>
+      </div>
+
+      <div class="ac-legend">
+        <span class="ac-badge ac-turf">AC 0–63: Turf</span>
+        <span class="ac-badge ac-mixed">AC 64–212: Mixed</span>
+        <span class="ac-badge ac-dirt">AC 213–254: Dirt Lean</span>
+        <span class="ac-badge ac-max">AC 255: Dirt Max</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal-overlay" id="modalOverlay" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="modal">
+      <h4 id="modalTitle">No Perfect Matches</h4>
+      <p id="modalBody"></p>
+      <div class="btnrow">
+        <button class="btn primary" id="modalOk">OK</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const gameData = {"revA": {"sires": [{"name": "Abukuma Polo", "stamina": 30, "speed": 31, "sharp": 41, "ac": 252, "start": 8, "corner": 12, "oob": 8, "competing": 8, "tenacious": 4, "spurt": 11}, {"name": "Afrito", "stamina": 12, "speed": 42, "sharp": 45, "ac": 168, "start": 9, "corner": 10, "oob": 5, "competing": 9, "tenacious": 5, "spurt": 12}, {"name": "Air Jihad", "stamina": 30, "speed": 36, "sharp": 37, "ac": 118, "start": 8, "corner": 8, "oob": 10, "competing": 8, "tenacious": 8, "spurt": 8}, {"name": "Big Red", "stamina": 22, "speed": 46, "sharp": 32, "ac": 76, "start": 10, "corner": 4, "oob": 4, "competing": 11, "tenacious": 11, "spurt": 10}, {"name": "Biwa Hayahide", "stamina": 34, "speed": 33, "sharp": 33, "ac": 153, "start": 9, "corner": 9, "oob": 6, "competing": 9, "tenacious": 9, "spurt": 8}, {"name": "Brave Hornet", "stamina": 39, "speed": 34, "sharp": 19, "ac": 64, "start": 14, "corner": 3, "oob": 7, "competing": 8, "tenacious": 6, "spurt": 12}, {"name": "Brian's Time", "stamina": 40, "speed": 41, "sharp": 37, "ac": 232, "start": 9, "corner": 9, "oob": 8, "competing": 9, "tenacious": 8, "spurt": 10}, {"name": "Bubblegum Fellow", "stamina": 34, "speed": 36, "sharp": 30, "ac": 136, "start": 12, "corner": 8, "oob": 3, "competing": 6, "tenacious": 15, "spurt": 6}, {"name": "Carnegie", "stamina": 40, "speed": 33, "sharp": 30, "ac": 99, "start": 8, "corner": 12, "oob": 6, "competing": 6, "tenacious": 9, "spurt": 9}, {"name": "Chisuke Special", "stamina": 40, "speed": 45, "sharp": 40, "ac": 0, "start": 15, "corner": 1, "oob": 15, "competing": 1, "tenacious": 15, "spurt": 1}, {"name": "Commander-in-Chief", "stamina": 54, "speed": 32, "sharp": 18, "ac": 140, "start": 14, "corner": 3, "oob": 7, "competing": 8, "tenacious": 15, "spurt": 3}, {"name": "Concert Boy", "stamina": 38, "speed": 36, "sharp": 26, "ac": 255, "start": 10, "corner": 10, "oob": 3, "competing": 5, "tenacious": 12, "spurt": 10}, {"name": "Cyber Battle", "stamina": 49, "speed": 29, "sharp": 14, "ac": 208, "start": 15, "corner": 3, "oob": 7, "competing": 7, "tenacious": 3, "spurt": 15}, {"name": "Dance in the Dark", "stamina": 30, "speed": 31, "sharp": 44, "ac": 118, "start": 6, "corner": 10, "oob": 7, "competing": 7, "tenacious": 8, "spurt": 12}, {"name": "Dancing Brave", "stamina": 54, "speed": 35, "sharp": 26, "ac": 249, "start": 6, "corner": 6, "oob": 10, "competing": 11, "tenacious": 6, "spurt": 11}, {"name": "Dancing Passer", "stamina": 47, "speed": 24, "sharp": 22, "ac": 153, "start": 2, "corner": 10, "oob": 15, "competing": 7, "tenacious": 4, "spurt": 12}, {"name": "Dinah Gulliver", "stamina": 32, "speed": 25, "sharp": 49, "ac": 127, "start": 3, "corner": 8, "oob": 14, "competing": 7, "tenacious": 4, "spurt": 14}, {"name": "Drag Fighter", "stamina": 25, "speed": 35, "sharp": 41, "ac": 159, "start": 5, "corner": 6, "oob": 13, "competing": 9, "tenacious": 5, "spurt": 12}, {"name": "Dynamite Bomb", "stamina": 42, "speed": 19, "sharp": 32, "ac": 57, "start": 14, "corner": 3, "oob": 7, "competing": 9, "tenacious": 4, "spurt": 13}, {"name": "El Condor Passer", "stamina": 27, "speed": 36, "sharp": 45, "ac": 252, "start": 8, "corner": 9, "oob": 5, "competing": 8, "tenacious": 9, "spurt": 12}, {"name": "Forty Niner", "stamina": 24, "speed": 52, "sharp": 29, "ac": 184, "start": 3, "corner": 12, "oob": 14, "competing": 8, "tenacious": 3, "spurt": 12}, {"name": "Fuji Kiseki", "stamina": 31, "speed": 43, "sharp": 36, "ac": 172, "start": 6, "corner": 6, "oob": 8, "competing": 8, "tenacious": 11, "spurt": 11}, {"name": "Fusaichi Concorde", "stamina": 30, "speed": 28, "sharp": 44, "ac": 87, "start": 9, "corner": 7, "oob": 3, "competing": 8, "tenacious": 8, "spurt": 15}, {"name": "Gai Lin Xan", "stamina": 48, "speed": 33, "sharp": 18, "ac": 144, "start": 14, "corner": 3, "oob": 7, "competing": 10, "tenacious": 4, "spurt": 12}, {"name": "Genuin", "stamina": 19, "speed": 41, "sharp": 46, "ac": 106, "start": 14, "corner": 8, "oob": 3, "competing": 10, "tenacious": 5, "spurt": 10}, {"name": "Glass Wonder", "stamina": 30, "speed": 50, "sharp": 35, "ac": 121, "start": 8, "corner": 8, "oob": 8, "competing": 8, "tenacious": 8, "spurt": 12}, {"name": "Golden Veil", "stamina": 17, "speed": 46, "sharp": 32, "ac": 115, "start": 9, "corner": 7, "oob": 0, "competing": 15, "tenacious": 13, "spurt": 6}, {"name": "Hishiakebono", "stamina": 24, "speed": 34, "sharp": 33, "ac": 133, "start": 9, "corner": 10, "oob": 7, "competing": 7, "tenacious": 7, "spurt": 10}, {"name": "Hit Maker", "stamina": 37, "speed": 40, "sharp": 37, "ac": 170, "start": 12, "corner": 8, "oob": 8, "competing": 8, "tenacious": 8, "spurt": 8}, {"name": "Jade Robbery", "stamina": 33, "speed": 31, "sharp": 42, "ac": 248, "start": 10, "corner": 9, "oob": 8, "competing": 10, "tenacious": 8, "spurt": 5}, {"name": "Japanese Pirouner", "stamina": 22, "speed": 46, "sharp": 34, "ac": 163, "start": 15, "corner": 15, "oob": 2, "competing": 7, "tenacious": 1, "spurt": 10}, {"name": "King Bright", "stamina": 34, "speed": 12, "sharp": 48, "ac": 63, "start": 12, "corner": 12, "oob": 0, "competing": 9, "tenacious": 9, "spurt": 8}, {"name": "M.I. Blanc", "stamina": 28, "speed": 34, "sharp": 28, "ac": 201, "start": 11, "corner": 7, "oob": 7, "competing": 11, "tenacious": 11, "spurt": 3}, {"name": "Marvelous Sunday", "stamina": 25, "speed": 40, "sharp": 41, "ac": 136, "start": 12, "corner": 8, "oob": 9, "competing": 9, "tenacious": 4, "spurt": 8}, {"name": "Mayano Top Gun", "stamina": 28, "speed": 48, "sharp": 34, "ac": 67, "start": 10, "corner": 9, "oob": 6, "competing": 6, "tenacious": 9, "spurt": 10}, {"name": "MedillomacQueen", "stamina": 33, "speed": 30, "sharp": 40, "ac": 182, "start": 10, "corner": 11, "oob": 11, "competing": 6, "tenacious": 6, "spurt": 6}, {"name": "Meisei Opera", "stamina": 28, "speed": 39, "sharp": 37, "ac": 186, "start": 10, "corner": 10, "oob": 6, "competing": 5, "tenacious": 4, "spurt": 15}, {"name": "Mejiro Palmer", "stamina": 35, "speed": 34, "sharp": 20, "ac": 133, "start": 12, "corner": 10, "oob": 6, "competing": 7, "tenacious": 6, "spurt": 9}, {"name": "Mejiro Ryan", "stamina": 50, "speed": 25, "sharp": 30, "ac": 107, "start": 7, "corner": 3, "oob": 7, "competing": 8, "tenacious": 15, "spurt": 10}, {"name": "Miami Beach", "stamina": 44, "speed": 19, "sharp": 29, "ac": 41, "start": 3, "corner": 10, "oob": 14, "competing": 7, "tenacious": 3, "spurt": 13}, {"name": "Mihono Bourbon", "stamina": 30, "speed": 45, "sharp": 25, "ac": 135, "start": 14, "corner": 9, "oob": 6, "competing": 5, "tenacious": 10, "spurt": 6}, {"name": "Mihroman", "stamina": 29, "speed": 44, "sharp": 19, "ac": 236, "start": 6, "corner": 10, "oob": 11, "competing": 7, "tenacious": 6, "spurt": 12}, {"name": "Mill George", "stamina": 51, "speed": 25, "sharp": 24, "ac": 220, "start": 6, "corner": 9, "oob": 9, "competing": 9, "tenacious": 14, "spurt": 3}, {"name": "Momiji Sundae", "stamina": 39, "speed": 19, "sharp": 34, "ac": 240, "start": 15, "corner": 3, "oob": 6, "competing": 10, "tenacious": 4, "spurt": 12}, {"name": "Northern Trust", "stamina": 30, "speed": 43, "sharp": 45, "ac": 140, "start": 6, "corner": 8, "oob": 11, "competing": 11, "tenacious": 9, "spurt": 6}, {"name": "Offside Trap", "stamina": 30, "speed": 25, "sharp": 34, "ac": 118, "start": 6, "corner": 9, "oob": 10, "competing": 10, "tenacious": 9, "spurt": 6}, {"name": "Oguri Cap", "stamina": 46, "speed": 25, "sharp": 29, "ac": 154, "start": 11, "corner": 5, "oob": 7, "competing": 10, "tenacious": 6, "spurt": 11}, {"name": "Opera House", "stamina": 52, "speed": 35, "sharp": 17, "ac": 156, "start": 5, "corner": 9, "oob": 9, "competing": 9, "tenacious": 12, "spurt": 7}, {"name": "Ozigian", "stamina": 38, "speed": 40, "sharp": 22, "ac": 153, "start": 15, "corner": 9, "oob": 5, "competing": 6, "tenacious": 14, "spurt": 1}, {"name": "Pilsudski", "stamina": 43, "speed": 35, "sharp": 30, "ac": 88, "start": 8, "corner": 12, "oob": 6, "competing": 7, "tenacious": 7, "spurt": 10}, {"name": "Ramtara", "stamina": 29, "speed": 38, "sharp": 48, "ac": 170, "start": 8, "corner": 7, "oob": 10, "competing": 9, "tenacious": 7, "spurt": 9}, {"name": "Real Shaddai", "stamina": 19, "speed": 53, "sharp": 29, "ac": 183, "start": 9, "corner": 9, "oob": 9, "competing": 7, "tenacious": 9, "spurt": 7}, {"name": "Sakura Baxin O", "stamina": 10, "speed": 50, "sharp": 45, "ac": 200, "start": 15, "corner": 4, "oob": 3, "competing": 14, "tenacious": 3, "spurt": 12}, {"name": "Sakura Chitose-O", "stamina": 25, "speed": 37, "sharp": 40, "ac": 131, "start": 10, "corner": 6, "oob": 3, "competing": 6, "tenacious": 14, "spurt": 11}, {"name": "Sakura Laurel", "stamina": 37, "speed": 30, "sharp": 39, "ac": 142, "start": 5, "corner": 11, "oob": 7, "competing": 7, "tenacious": 8, "spurt": 12}, {"name": "Sakura Utah", "stamina": 27, "speed": 50, "sharp": 31, "ac": 164, "start": 8, "corner": 10, "oob": 6, "competing": 8, "tenacious": 6, "spurt": 14}, {"name": "Sano Darkside", "stamina": 23, "speed": 16, "sharp": 45, "ac": 63, "start": 3, "corner": 3, "oob": 14, "competing": 7, "tenacious": 8, "spurt": 14}, {"name": "Scarecrow", "stamina": 41, "speed": 33, "sharp": 16, "ac": 160, "start": 12, "corner": 13, "oob": 0, "competing": 0, "tenacious": 13, "spurt": 12}, {"name": "Sears Tower", "stamina": 32, "speed": 22, "sharp": 39, "ac": 111, "start": 10, "corner": 10, "oob": 2, "competing": 10, "tenacious": 10, "spurt": 8}, {"name": "Silent Bloom", "stamina": 14, "speed": 24, "sharp": 60, "ac": 246, "start": 1, "corner": 8, "oob": 15, "competing": 7, "tenacious": 6, "spurt": 13}, {"name": "Simborildorf", "stamina": 44, "speed": 33, "sharp": 30, "ac": 169, "start": 14, "corner": 3, "oob": 7, "competing": 8, "tenacious": 4, "spurt": 14}, {"name": "Soccer Boy", "stamina": 38, "speed": 24, "sharp": 40, "ac": 169, "start": 5, "corner": 10, "oob": 9, "competing": 9, "tenacious": 12, "spurt": 5}, {"name": "Special Week", "stamina": 36, "speed": 48, "sharp": 30, "ac": 236, "start": 4, "corner": 8, "oob": 12, "competing": 8, "tenacious": 8, "spurt": 12}, {"name": "Spinifix", "stamina": 22, "speed": 27, "sharp": 44, "ac": 182, "start": 3, "corner": 8, "oob": 14, "competing": 7, "tenacious": 4, "spurt": 14}, {"name": "Sunday Silence", "stamina": 31, "speed": 49, "sharp": 40, "ac": 216, "start": 9, "corner": 9, "oob": 8, "competing": 8, "tenacious": 8, "spurt": 11}, {"name": "Sunny Brian", "stamina": 28, "speed": 40, "sharp": 30, "ac": 152, "start": 15, "corner": 10, "oob": 2, "competing": 7, "tenacious": 9, "spurt": 7}, {"name": "Taiki Shuttle", "stamina": 30, "speed": 49, "sharp": 31, "ac": 221, "start": 12, "corner": 6, "oob": 6, "competing": 8, "tenacious": 8, "spurt": 12}, {"name": "Tamamo Cross", "stamina": 29, "speed": 30, "sharp": 47, "ac": 151, "start": 5, "corner": 5, "oob": 14, "competing": 5, "tenacious": 9, "spurt": 12}, {"name": "Thunder Dolce", "stamina": 24, "speed": 47, "sharp": 22, "ac": 147, "start": 14, "corner": 3, "oob": 7, "competing": 10, "tenacious": 4, "spurt": 12}, {"name": "Tiki Blizzard", "stamina": 33, "speed": 37, "sharp": 30, "ac": 166, "start": 8, "corner": 7, "oob": 7, "competing": 8, "tenacious": 14, "spurt": 6}, {"name": "Timber Country", "stamina": 25, "speed": 41, "sharp": 38, "ac": 153, "start": 10, "corner": 10, "oob": 5, "competing": 5, "tenacious": 6, "spurt": 14}, {"name": "Tokai Teio", "stamina": 24, "speed": 41, "sharp": 45, "ac": 166, "start": 10, "corner": 6, "oob": 6, "competing": 11, "tenacious": 6, "spurt": 11}, {"name": "Tony Bin", "stamina": 43, "speed": 43, "sharp": 31, "ac": 214, "start": 7, "corner": 12, "oob": 7, "competing": 9, "tenacious": 14, "spurt": 3}, {"name": "Transwind", "stamina": 31, "speed": 45, "sharp": 22, "ac": 124, "start": 13, "corner": 6, "oob": 7, "competing": 8, "tenacious": 4, "spurt": 12}, {"name": "Trick Power", "stamina": 19, "speed": 29, "sharp": 44, "ac": 223, "start": 3, "corner": 10, "oob": 15, "competing": 7, "tenacious": 3, "spurt": 12}, {"name": "Trot Thunder", "stamina": 35, "speed": 27, "sharp": 33, "ac": 217, "start": 4, "corner": 8, "oob": 4, "competing": 12, "tenacious": 14, "spurt": 8}, {"name": "Tsuyoshi Tayasu", "stamina": 31, "speed": 27, "sharp": 38, "ac": 119, "start": 7, "corner": 7, "oob": 3, "competing": 7, "tenacious": 11, "spurt": 15}, {"name": "Vortex", "stamina": 39, "speed": 22, "sharp": 32, "ac": 217, "start": 7, "corner": 4, "oob": 11, "competing": 11, "tenacious": 12, "spurt": 5}, {"name": "Wakao Raiden", "stamina": 40, "speed": 29, "sharp": 30, "ac": 249, "start": 6, "corner": 9, "oob": 10, "competing": 10, "tenacious": 9, "spurt": 6}, {"name": "White Noether", "stamina": 19, "speed": 34, "sharp": 39, "ac": 182, "start": 13, "corner": 4, "oob": 7, "competing": 10, "tenacious": 4, "spurt": 12}, {"name": "White Pepper", "stamina": 20, "speed": 25, "sharp": 56, "ac": 0, "start": 4, "corner": 5, "oob": 8, "competing": 9, "tenacious": 10, "spurt": 14}, {"name": "Wild Cat", "stamina": 22, "speed": 29, "sharp": 42, "ac": 255, "start": 15, "corner": 3, "oob": 6, "competing": 7, "tenacious": 7, "spurt": 12}, {"name": "Winning Ticket", "stamina": 42, "speed": 29, "sharp": 29, "ac": 153, "start": 3, "corner": 8, "oob": 15, "competing": 7, "tenacious": 4, "spurt": 13}, {"name": "Yamanin Zephyr", "stamina": 28, "speed": 40, "sharp": 30, "ac": 185, "start": 10, "corner": 4, "oob": 4, "competing": 12, "tenacious": 12, "spurt": 8}], "dams": [{"name": "Adorable", "stamina": 31, "speed": 28, "sharp": 39, "ac": 38, "start": 8, "corner": 3, "oob": 9, "competing": 11, "tenacious": 6, "spurt": 13}, {"name": "Agnes Flora", "stamina": 30, "speed": 36, "sharp": 37, "ac": 183, "start": 8, "corner": 10, "oob": 8, "competing": 8, "tenacious": 4, "spurt": 12}, {"name": "Air Groove", "stamina": 36, "speed": 42, "sharp": 32, "ac": 132, "start": 4, "corner": 8, "oob": 12, "competing": 12, "tenacious": 4, "spurt": 12}, {"name": "Alyssum", "stamina": 17, "speed": 44, "sharp": 25, "ac": 44, "start": 4, "corner": 4, "oob": 14, "competing": 12, "tenacious": 4, "spurt": 12}, {"name": "Anfinii", "stamina": 33, "speed": 35, "sharp": 33, "ac": 219, "start": 8, "corner": 9, "oob": 10, "competing": 8, "tenacious": 7, "spurt": 8}, {"name": "Antique Bulb", "stamina": 20, "speed": 29, "sharp": 45, "ac": 118, "start": 5, "corner": 15, "oob": 9, "competing": 6, "tenacious": 11, "spurt": 5}, {"name": "Beria", "stamina": 37, "speed": 29, "sharp": 20, "ac": 255, "start": 14, "corner": 3, "oob": 7, "competing": 10, "tenacious": 4, "spurt": 12}, {"name": "Birthday Rose", "stamina": 42, "speed": 21, "sharp": 22, "ac": 96, "start": 4, "corner": 13, "oob": 4, "competing": 13, "tenacious": 4, "spurt": 12}, {"name": "Black Sapphire", "stamina": 37, "speed": 36, "sharp": 28, "ac": 41, "start": 2, "corner": 15, "oob": 5, "competing": 10, "tenacious": 3, "spurt": 15}, {"name": "Bubble Company", "stamina": 36, "speed": 33, "sharp": 30, "ac": 93, "start": 8, "corner": 9, "oob": 4, "competing": 7, "tenacious": 12, "spurt": 10}, {"name": "Bubble Prospector", "stamina": 33, "speed": 35, "sharp": 30, "ac": 151, "start": 12, "corner": 8, "oob": 3, "competing": 7, "tenacious": 13, "spurt": 7}, {"name": "Candle Time", "stamina": 22, "speed": 41, "sharp": 22, "ac": 163, "start": 15, "corner": 3, "oob": 8, "competing": 7, "tenacious": 4, "spurt": 13}, {"name": "Catnip", "stamina": 15, "speed": 40, "sharp": 30, "ac": 115, "start": 12, "corner": 14, "oob": 4, "competing": 4, "tenacious": 4, "spurt": 12}, {"name": "Catuja", "stamina": 10, "speed": 44, "sharp": 32, "ac": 108, "start": 12, "corner": 14, "oob": 4, "competing": 4, "tenacious": 4, "spurt": 12}, {"name": "Christmas Marie", "stamina": 22, "speed": 16, "sharp": 47, "ac": 175, "start": 14, "corner": 3, "oob": 7, "competing": 8, "tenacious": 4, "spurt": 14}, {"name": "Chrome Sara", "stamina": 15, "speed": 39, "sharp": 32, "ac": 51, "start": 3, "corner": 8, "oob": 14, "competing": 7, "tenacious": 4, "spurt": 14}, {"name": "Conkers", "stamina": 27, "speed": 41, "sharp": 17, "ac": 252, "start": 12, "corner": 8, "oob": 2, "competing": 14, "tenacious": 2, "spurt": 12}, {"name": "Croupier Lady", "stamina": 32, "speed": 39, "sharp": 32, "ac": 118, "start": 11, "corner": 10, "oob": 7, "competing": 3, "tenacious": 9, "spurt": 10}, {"name": "Cutting Edge", "stamina": 27, "speed": 40, "sharp": 38, "ac": 108, "start": 13, "corner": 6, "oob": 6, "competing": 7, "tenacious": 10, "spurt": 8}, {"name": "Dance Partner", "stamina": 31, "speed": 30, "sharp": 38, "ac": 135, "start": 9, "corner": 11, "oob": 6, "competing": 7, "tenacious": 3, "spurt": 14}, {"name": "Dark Crimson", "stamina": 30, "speed": 16, "sharp": 40, "ac": 246, "start": 2, "corner": 14, "oob": 8, "competing": 8, "tenacious": 2, "spurt": 14}, {"name": "Day Lily", "stamina": 22, "speed": 36, "sharp": 26, "ac": 44, "start": 13, "corner": 3, "oob": 6, "competing": 8, "tenacious": 7, "spurt": 13}, {"name": "Delphinium", "stamina": 32, "speed": 19, "sharp": 45, "ac": 63, "start": 15, "corner": 15, "oob": 1, "competing": 3, "tenacious": 1, "spurt": 15}, {"name": "Elimo Chic", "stamina": 35, "speed": 28, "sharp": 37, "ac": 153, "start": 3, "corner": 3, "oob": 6, "competing": 15, "tenacious": 8, "spurt": 15}, {"name": "Fabulous Ruffin", "stamina": 30, "speed": 38, "sharp": 25, "ac": 120, "start": 12, "corner": 8, "oob": 2, "competing": 8, "tenacious": 14, "spurt": 6}, {"name": "Fadeta", "stamina": 32, "speed": 33, "sharp": 32, "ac": 167, "start": 8, "corner": 12, "oob": 8, "competing": 7, "tenacious": 8, "spurt": 7}, {"name": "Final Record", "stamina": 47, "speed": 26, "sharp": 12, "ac": 208, "start": 14, "corner": 10, "oob": 4, "competing": 10, "tenacious": 6, "spurt": 6}, {"name": "Flower Park", "stamina": 16, "speed": 42, "sharp": 37, "ac": 60, "start": 12, "corner": 8, "oob": 4, "competing": 10, "tenacious": 10, "spurt": 6}, {"name": "Geoffory", "stamina": 33, "speed": 32, "sharp": 32, "ac": 183, "start": 10, "corner": 6, "oob": 5, "competing": 10, "tenacious": 14, "spurt": 5}, {"name": "Goodbye Halo", "stamina": 43, "speed": 30, "sharp": 31, "ac": 197, "start": 10, "corner": 6, "oob": 9, "competing": 6, "tenacious": 10, "spurt": 9}, {"name": "Heart of Jay", "stamina": 12, "speed": 41, "sharp": 32, "ac": 140, "start": 6, "corner": 4, "oob": 7, "competing": 11, "tenacious": 14, "spurt": 10}, {"name": "Hishi Amazon", "stamina": 30, "speed": 31, "sharp": 44, "ac": 111, "start": 12, "corner": 15, "oob": 3, "competing": 6, "tenacious": 10, "spurt": 4}, {"name": "Holy Melody", "stamina": 29, "speed": 36, "sharp": 20, "ac": 188, "start": 2, "corner": 8, "oob": 15, "competing": 8, "tenacious": 4, "spurt": 13}, {"name": "Irish Dance", "stamina": 33, "speed": 37, "sharp": 29, "ac": 119, "start": 9, "corner": 11, "oob": 10, "competing": 5, "tenacious": 8, "spurt": 7}, {"name": "Lace", "stamina": 25, "speed": 40, "sharp": 31, "ac": 152, "start": 12, "corner": 8, "oob": 3, "competing": 6, "tenacious": 13, "spurt": 8}, {"name": "Lemon Balm", "stamina": 20, "speed": 56, "sharp": 22, "ac": 255, "start": 3, "corner": 10, "oob": 15, "competing": 7, "tenacious": 3, "spurt": 12}, {"name": "Love Jay", "stamina": 20, "speed": 32, "sharp": 41, "ac": 255, "start": 11, "corner": 4, "oob": 7, "competing": 9, "tenacious": 5, "spurt": 14}, {"name": "Lyophus daisy", "stamina": 14, "speed": 63, "sharp": 14, "ac": 35, "start": 8, "corner": 7, "oob": 15, "competing": 7, "tenacious": 3, "spurt": 10}, {"name": "Manhattan Lady", "stamina": 31, "speed": 18, "sharp": 45, "ac": 191, "start": 2, "corner": 11, "oob": 14, "competing": 13, "tenacious": 3, "spurt": 7}, {"name": "Manjushage", "stamina": 32, "speed": 16, "sharp": 37, "ac": 166, "start": 3, "corner": 14, "oob": 13, "competing": 7, "tenacious": 8, "spurt": 5}, {"name": "Maple Dancer", "stamina": 50, "speed": 30, "sharp": 11, "ac": 185, "start": 8, "corner": 6, "oob": 9, "competing": 9, "tenacious": 10, "spurt": 8}, {"name": "Marzen Papillon", "stamina": 12, "speed": 46, "sharp": 27, "ac": 115, "start": 13, "corner": 10, "oob": 10, "competing": 6, "tenacious": 6, "spurt": 5}, {"name": "Max Rose", "stamina": 32, "speed": 32, "sharp": 36, "ac": 135, "start": 11, "corner": 14, "oob": 3, "competing": 8, "tenacious": 3, "spurt": 13}, {"name": "Medirolamone", "stamina": 26, "speed": 44, "sharp": 32, "ac": 211, "start": 8, "corner": 7, "oob": 10, "competing": 9, "tenacious": 7, "spurt": 9}, {"name": "Mejiro Dobel", "stamina": 34, "speed": 24, "sharp": 44, "ac": 220, "start": 5, "corner": 5, "oob": 6, "competing": 13, "tenacious": 13, "spurt": 8}, {"name": "Mill Racer", "stamina": 32, "speed": 40, "sharp": 32, "ac": 153, "start": 11, "corner": 5, "oob": 5, "competing": 15, "tenacious": 9, "spurt": 5}, {"name": "Naomi's Dream", "stamina": 20, "speed": 26, "sharp": 40, "ac": 79, "start": 11, "corner": 11, "oob": 11, "competing": 6, "tenacious": 6, "spurt": 5}, {"name": "Nishino Flower", "stamina": 26, "speed": 41, "sharp": 33, "ac": 179, "start": 3, "corner": 9, "oob": 9, "competing": 7, "tenacious": 10, "spurt": 12}, {"name": "North Flight", "stamina": 22, "speed": 35, "sharp": 36, "ac": 123, "start": 12, "corner": 10, "oob": 5, "competing": 3, "tenacious": 9, "spurt": 12}, {"name": "Oguri Roman", "stamina": 23, "speed": 31, "sharp": 34, "ac": 119, "start": 6, "corner": 6, "oob": 7, "competing": 8, "tenacious": 14, "spurt": 9}, {"name": "Orihime", "stamina": 27, "speed": 25, "sharp": 38, "ac": 255, "start": 5, "corner": 8, "oob": 5, "competing": 9, "tenacious": 9, "spurt": 14}, {"name": "Palbright", "stamina": 31, "speed": 28, "sharp": 29, "ac": 41, "start": 10, "corner": 10, "oob": 7, "competing": 7, "tenacious": 7, "spurt": 9}, {"name": "Parficus", "stamina": 40, "speed": 29, "sharp": 31, "ac": 57, "start": 9, "corner": 9, "oob": 7, "competing": 10, "tenacious": 8, "spurt": 7}, {"name": "Peach Pop", "stamina": 17, "speed": 26, "sharp": 42, "ac": 223, "start": 7, "corner": 5, "oob": 15, "competing": 7, "tenacious": 3, "spurt": 13}, {"name": "Phalaenopsis", "stamina": 34, "speed": 36, "sharp": 40, "ac": 200, "start": 8, "corner": 10, "oob": 8, "competing": 8, "tenacious": 4, "spurt": 13}, {"name": "Powerful Lady", "stamina": 32, "speed": 38, "sharp": 30, "ac": 165, "start": 10, "corner": 7, "oob": 6, "competing": 10, "tenacious": 9, "spurt": 9}, {"name": "Pure Arpinus", "stamina": 20, "speed": 44, "sharp": 27, "ac": 124, "start": 10, "corner": 8, "oob": 6, "competing": 8, "tenacious": 4, "spurt": 14}, {"name": "Riverland", "stamina": 45, "speed": 34, "sharp": 10, "ac": 105, "start": 13, "corner": 3, "oob": 8, "competing": 9, "tenacious": 4, "spurt": 13}, {"name": "Rosita", "stamina": 30, "speed": 33, "sharp": 36, "ac": 253, "start": 8, "corner": 6, "oob": 6, "competing": 10, "tenacious": 8, "spurt": 12}, {"name": "Saint Marie", "stamina": 20, "speed": 37, "sharp": 29, "ac": 153, "start": 3, "corner": 8, "oob": 13, "competing": 7, "tenacious": 7, "spurt": 12}, {"name": "Sakura Clair", "stamina": 25, "speed": 30, "sharp": 46, "ac": 196, "start": 9, "corner": 6, "oob": 10, "competing": 6, "tenacious": 6, "spurt": 13}, {"name": "Scarlet Bouquet", "stamina": 30, "speed": 37, "sharp": 35, "ac": 135, "start": 8, "corner": 10, "oob": 10, "competing": 6, "tenacious": 4, "spurt": 12}, {"name": "Sea King the Pearl", "stamina": 31, "speed": 45, "sharp": 24, "ac": 146, "start": 14, "corner": 3, "oob": 7, "competing": 10, "tenacious": 4, "spurt": 12}, {"name": "Shinko Lovely", "stamina": 22, "speed": 32, "sharp": 44, "ac": 47, "start": 9, "corner": 8, "oob": 9, "competing": 9, "tenacious": 8, "spurt": 9}, {"name": "Ski Paradise", "stamina": 17, "speed": 31, "sharp": 37, "ac": 182, "start": 12, "corner": 6, "oob": 6, "competing": 10, "tenacious": 8, "spurt": 8}, {"name": "Smart Success", "stamina": 22, "speed": 19, "sharp": 45, "ac": 79, "start": 1, "corner": 5, "oob": 6, "competing": 14, "tenacious": 12, "spurt": 12}, {"name": "Snow White", "stamina": 46, "speed": 30, "sharp": 23, "ac": 240, "start": 15, "corner": 11, "oob": 6, "competing": 7, "tenacious": 6, "spurt": 5}, {"name": "Snowflake", "stamina": 45, "speed": 24, "sharp": 17, "ac": 41, "start": 3, "corner": 12, "oob": 15, "competing": 4, "tenacious": 4, "spurt": 12}, {"name": "Spring Dress", "stamina": 32, "speed": 14, "sharp": 45, "ac": 38, "start": 3, "corner": 3, "oob": 13, "competing": 15, "tenacious": 3, "spurt": 13}, {"name": "Spring Gal", "stamina": 27, "speed": 11, "sharp": 47, "ac": 150, "start": 10, "corner": 12, "oob": 6, "competing": 6, "tenacious": 6, "spurt": 10}, {"name": "Stargazer", "stamina": 33, "speed": 30, "sharp": 31, "ac": 64, "start": 14, "corner": 3, "oob": 7, "competing": 8, "tenacious": 4, "spurt": 14}, {"name": "Stella madrid", "stamina": 28, "speed": 40, "sharp": 32, "ac": 73, "start": 10, "corner": 13, "oob": 5, "competing": 6, "tenacious": 4, "spurt": 12}, {"name": "Stone Speed Quinn", "stamina": 20, "speed": 36, "sharp": 30, "ac": 73, "start": 13, "corner": 3, "oob": 8, "competing": 10, "tenacious": 3, "spurt": 13}, {"name": "Strange Beat", "stamina": 40, "speed": 31, "sharp": 15, "ac": 160, "start": 4, "corner": 4, "oob": 14, "competing": 4, "tenacious": 12, "spurt": 12}, {"name": "Strawberry Jam", "stamina": 30, "speed": 14, "sharp": 42, "ac": 70, "start": 14, "corner": 3, "oob": 7, "competing": 8, "tenacious": 4, "spurt": 14}, {"name": "Sweet Lady", "stamina": 40, "speed": 19, "sharp": 27, "ac": 153, "start": 14, "corner": 3, "oob": 10, "competing": 6, "tenacious": 4, "spurt": 13}, {"name": "Takanenadeshiko", "stamina": 30, "speed": 19, "sharp": 41, "ac": 111, "start": 12, "corner": 7, "oob": 7, "competing": 7, "tenacious": 7, "spurt": 10}, {"name": "Tee Tee Girl", "stamina": 20, "speed": 26, "sharp": 55, "ac": 182, "start": 2, "corner": 9, "oob": 11, "competing": 6, "tenacious": 11, "spurt": 11}, {"name": "Tokai Natural", "stamina": 28, "speed": 30, "sharp": 45, "ac": 150, "start": 7, "corner": 5, "oob": 10, "competing": 7, "tenacious": 8, "spurt": 13}, {"name": "Uliwaka", "stamina": 42, "speed": 29, "sharp": 15, "ac": 144, "start": 14, "corner": 3, "oob": 7, "competing": 10, "tenacious": 4, "spurt": 12}, {"name": "Valley Queen", "stamina": 32, "speed": 40, "sharp": 33, "ac": 153, "start": 8, "corner": 12, "oob": 8, "competing": 8, "tenacious": 4, "spurt": 12}, {"name": "Vega", "stamina": 45, "speed": 34, "sharp": 26, "ac": 169, "start": 10, "corner": 7, "oob": 4, "competing": 10, "tenacious": 10, "spurt": 10}, {"name": "Velvet Bamboo", "stamina": 41, "speed": 33, "sharp": 16, "ac": 121, "start": 7, "corner": 10, "oob": 12, "competing": 10, "tenacious": 6, "spurt": 5}, {"name": "White Venus", "stamina": 22, "speed": 27, "sharp": 42, "ac": 54, "start": 12, "corner": 13, "oob": 4, "competing": 5, "tenacious": 12, "spurt": 4}]}, "revB": {"sires": [{"name": "Apache Shogun", "stamina": 41, "speed": 12, "sharp": 46, "ac": 111, "start": 14, "corner": 10, "oob": 9, "competing": 6, "tenacious": 5, "spurt": 4}, {"name": "Big Red", "stamina": 22, "speed": 46, "sharp": 32, "ac": 76, "start": 10, "corner": 4, "oob": 4, "competing": 10, "tenacious": 10, "spurt": 10}, {"name": "Black Devil", "stamina": 30, "speed": 52, "sharp": 28, "ac": 35, "start": 14, "corner": 2, "oob": 10, "competing": 6, "tenacious": 14, "spurt": 2}, {"name": "Blue Stinger", "stamina": 39, "speed": 35, "sharp": 24, "ac": 41, "start": 14, "corner": 3, "oob": 7, "competing": 8, "tenacious": 4, "spurt": 12}, {"name": "Brave Hornet", "stamina": 39, "speed": 34, "sharp": 19, "ac": 64, "start": 14, "corner": 3, "oob": 7, "competing": 8, "tenacious": 4, "spurt": 12}, {"name": "Brian's Time", "stamina": 40, "speed": 44, "sharp": 31, "ac": 208, "start": 7, "corner": 7, "oob": 7, "competing": 10, "tenacious": 10, "spurt": 10}, {"name": "Cassandra Stage", "stamina": 33, "speed": 5, "sharp": 50, "ac": 255, "start": 14, "corner": 5, "oob": 5, "competing": 8, "tenacious": 4, "spurt": 12}, {"name": "Climax", "stamina": 47, "speed": 34, "sharp": 12, "ac": 105, "start": 14, "corner": 3, "oob": 7, "competing": 8, "tenacious": 4, "spurt": 12}, {"name": "Crystal Shadow", "stamina": 49, "speed": 24, "sharp": 19, "ac": 73, "start": 14, "corner": 3, "oob": 7, "competing": 8, "tenacious": 4, "spurt": 12}, {"name": "Cyber Battle", "stamina": 49, "speed": 29, "sharp": 14, "ac": 208, "start": 15, "corner": 3, "oob": 7, "competing": 7, "tenacious": 3, "spurt": 13}, {"name": "Dancing Brave", "stamina": 54, "speed": 35, "sharp": 26, "ac": 185, "start": 6, "corner": 6, "oob": 10, "competing": 10, "tenacious": 6, "spurt": 10}, {"name": "Dancing Passer", "stamina": 47, "speed": 24, "sharp": 22, "ac": 153, "start": 2, "corner": 8, "oob": 15, "competing": 7, "tenacious": 4, "spurt": 12}, {"name": "Diadem Cross", "stamina": 32, "speed": 39, "sharp": 22, "ac": 188, "start": 3, "corner": 8, "oob": 15, "competing": 7, "tenacious": 3, "spurt": 12}, {"name": "Dinah Gulliver", "stamina": 32, "speed": 25, "sharp": 49, "ac": 127, "start": 3, "corner": 8, "oob": 14, "competing": 7, "tenacious": 4, "spurt": 12}, {"name": "Dolphin Brave", "stamina": 5, "speed": 45, "sharp": 35, "ac": 124, "start": 1, "corner": 8, "oob": 10, "competing": 9, "tenacious": 8, "spurt": 12}, {"name": "Down Taiga", "stamina": 43, "speed": 25, "sharp": 27, "ac": 112, "start": 15, "corner": 3, "oob": 7, "competing": 8, "tenacious": 4, "spurt": 11}, {"name": "Drag Fighter", "stamina": 25, "speed": 35, "sharp": 41, "ac": 159, "start": 5, "corner": 6, "oob": 11, "competing": 9, "tenacious": 5, "spurt": 12}, {"name": "Dynamite Bomb", "stamina": 42, "speed": 19, "sharp": 32, "ac": 57, "start": 14, "corner": 3, "oob": 7, "competing": 8, "tenacious": 4, "spurt": 12}, {"name": "Fuji Kiseki", "stamina": 28, "speed": 41, "sharp": 32, "ac": 44, "start": 6, "corner": 6, "oob": 8, "competing": 8, "tenacious": 10, "spurt": 10}, {"name": "Gai Lin Xan", "stamina": 48, "speed": 33, "sharp": 18, "ac": 144, "start": 14, "corner": 3, "oob": 7, "competing": 8, "tenacious": 4, "spurt": 12}, {"name": "Geppetto", "stamina": 19, "speed": 49, "sharp": 24, "ac": 108, "start": 12, "corner": 1, "oob": 9, "competing": 9, "tenacious": 6, "spurt": 11}, {"name": "Glass Zip", "stamina": 44, "speed": 36, "sharp": 14, "ac": 121, "start": 12, "corner": 11, "oob": 8, "competing": 7, "tenacious": 6, "spurt": 4}, {"name": "Gold Charm", "stamina": 44, "speed": 22, "sharp": 27, "ac": 240, "start": 11, "corner": 10, "oob": 8, "competing": 7, "tenacious": 6, "spurt": 5}, {"name": "Golden Veil", "stamina": 17, "speed": 46, "sharp": 32, "ac": 115, "start": 9, "corner": 7, "oob": 0, "competing": 13, "tenacious": 13, "spurt": 6}, {"name": "Happy Tails", "stamina": 5, "speed": 50, "sharp": 35, "ac": 156, "start": 2, "corner": 14, "oob": 9, "competing": 7, "tenacious": 12, "spurt": 4}, {"name": "Heaven's Foot", "stamina": 27, "speed": 27, "sharp": 39, "ac": 38, "start": 3, "corner": 8, "oob": 14, "competing": 7, "tenacious": 4, "spurt": 12}, {"name": "Hell Breath", "stamina": 27, "speed": 42, "sharp": 24, "ac": 67, "start": 15, "corner": 4, "oob": 6, "competing": 7, "tenacious": 5, "spurt": 11}, {"name": "Hot Boy", "stamina": 19, "speed": 39, "sharp": 34, "ac": 99, "start": 14, "corner": 3, "oob": 2, "competing": 11, "tenacious": 6, "spurt": 12}, {"name": "Jade Robbery", "stamina": 32, "speed": 30, "sharp": 42, "ac": 150, "start": 10, "corner": 9, "oob": 8, "competing": 8, "tenacious": 8, "spurt": 5}, {"name": "King Bright", "stamina": 34, "speed": 12, "sharp": 48, "ac": 63, "start": 12, "corner": 12, "oob": 0, "competing": 8, "tenacious": 8, "spurt": 8}, {"name": "King Dancer", "stamina": 27, "speed": 19, "sharp": 47, "ac": 204, "start": 8, "corner": 12, "oob": 3, "competing": 4, "tenacious": 6, "spurt": 14}, {"name": "King Marina", "stamina": 19, "speed": 42, "sharp": 32, "ac": 179, "start": 3, "corner": 8, "oob": 14, "competing": 7, "tenacious": 4, "spurt": 12}, {"name": "Landmark", "stamina": 28, "speed": 17, "sharp": 49, "ac": 54, "start": 15, "corner": 5, "oob": 4, "competing": 8, "tenacious": 4, "spurt": 12}, {"name": "Little Roadie", "stamina": 17, "speed": 42, "sharp": 34, "ac": 51, "start": 3, "corner": 9, "oob": 14, "competing": 7, "tenacious": 3, "spurt": 12}, {"name": "Magic Poppo", "stamina": 49, "speed": 27, "sharp": 17, "ac": 111, "start": 15, "corner": 2, "oob": 0, "competing": 15, "tenacious": 4, "spurt": 12}, {"name": "Mayano Top Gun", "stamina": 28, "speed": 48, "sharp": 34, "ac": 35, "start": 10, "corner": 8, "oob": 6, "competing": 6, "tenacious": 8, "spurt": 10}, {"name": "MegiromacQueen", "stamina": 26, "speed": 30, "sharp": 44, "ac": 54, "start": 10, "corner": 10, "oob": 10, "competing": 6, "tenacious": 6, "spurt": 6}, {"name": "Miami Beach", "stamina": 44, "speed": 19, "sharp": 29, "ac": 41, "start": 3, "corner": 8, "oob": 14, "competing": 7, "tenacious": 3, "spurt": 13}, {"name": "Midnight Sun", "stamina": 24, "speed": 19, "sharp": 55, "ac": 175, "start": 13, "corner": 5, "oob": 5, "competing": 10, "tenacious": 5, "spurt": 10}, {"name": "Mihroman", "stamina": 29, "speed": 44, "sharp": 19, "ac": 236, "start": 6, "corner": 8, "oob": 11, "competing": 7, "tenacious": 6, "spurt": 12}, {"name": "Minami Shitenou", "stamina": 24, "speed": 44, "sharp": 24, "ac": 163, "start": 11, "corner": 6, "oob": 7, "competing": 9, "tenacious": 3, "spurt": 12}, {"name": "Momiji Sundae", "stamina": 39, "speed": 19, "sharp": 34, "ac": 160, "start": 15, "corner": 3, "oob": 6, "competing": 8, "tenacious": 4, "spurt": 12}, {"name": "Naritabu Ryan", "stamina": 21, "speed": 45, "sharp": 48, "ac": 47, "start": 13, "corner": 8, "oob": 3, "competing": 9, "tenacious": 12, "spurt": 3}, {"name": "Night Jaguar", "stamina": 32, "speed": 17, "sharp": 44, "ac": 70, "start": 15, "corner": 7, "oob": 0, "competing": 8, "tenacious": 6, "spurt": 12}, {"name": "Northern Trust", "stamina": 30, "speed": 43, "sharp": 45, "ac": 172, "start": 6, "corner": 8, "oob": 10, "competing": 10, "tenacious": 8, "spurt": 6}, {"name": "Oguri Cap", "stamina": 46, "speed": 25, "sharp": 29, "ac": 106, "start": 11, "corner": 5, "oob": 7, "competing": 8, "tenacious": 6, "spurt": 11}, {"name": "Oster Carpet", "stamina": 21, "speed": 43, "sharp": 26, "ac": 60, "start": 12, "corner": 12, "oob": 0, "competing": 12, "tenacious": 0, "spurt": 12}, {"name": "Pearl Lexington", "stamina": 39, "speed": 35, "sharp": 32, "ac": 48, "start": 3, "corner": 8, "oob": 14, "competing": 7, "tenacious": 4, "spurt": 12}, {"name": "Platinum Ring", "stamina": 42, "speed": 22, "sharp": 29, "ac": 153, "start": 10, "corner": 4, "oob": 1, "competing": 12, "tenacious": 10, "spurt": 11}, {"name": "Ramtara", "stamina": 30, "speed": 39, "sharp": 50, "ac": 170, "start": 8, "corner": 7, "oob": 9, "competing": 8, "tenacious": 7, "spurt": 9}, {"name": "Real Shaddai", "stamina": 17, "speed": 50, "sharp": 29, "ac": 211, "start": 9, "corner": 9, "oob": 9, "competing": 7, "tenacious": 7, "spurt": 7}, {"name": "Safety Boy", "stamina": 42, "speed": 29, "sharp": 22, "ac": 175, "start": 3, "corner": 12, "oob": 12, "competing": 8, "tenacious": 3, "spurt": 12}, {"name": "Sakura Baxin O", "stamina": 10, "speed": 50, "sharp": 45, "ac": 47, "start": 15, "corner": 4, "oob": 3, "competing": 12, "tenacious": 3, "spurt": 12}, {"name": "Scarecrow", "stamina": 41, "speed": 33, "sharp": 16, "ac": 160, "start": 12, "corner": 12, "oob": 0, "competing": 0, "tenacious": 12, "spurt": 12}, {"name": "Sea Guardian", "stamina": 34, "speed": 17, "sharp": 42, "ac": 38, "start": 4, "corner": 8, "oob": 13, "competing": 5, "tenacious": 4, "spurt": 14}, {"name": "Sears Tower", "stamina": 32, "speed": 22, "sharp": 39, "ac": 111, "start": 10, "corner": 10, "oob": 2, "competing": 8, "tenacious": 10, "spurt": 8}, {"name": "Second Age", "stamina": 29, "speed": 14, "sharp": 49, "ac": 150, "start": 11, "corner": 8, "oob": 0, "competing": 10, "tenacious": 8, "spurt": 11}, {"name": "Silent Bloom", "stamina": 14, "speed": 24, "sharp": 60, "ac": 246, "start": 1, "corner": 8, "oob": 14, "competing": 7, "tenacious": 6, "spurt": 12}, {"name": "Simborildorf", "stamina": 44, "speed": 33, "sharp": 30, "ac": 169, "start": 14, "corner": 3, "oob": 7, "competing": 8, "tenacious": 4, "spurt": 12}, {"name": "Sleep World", "stamina": 22, "speed": 38, "sharp": 48, "ac": 118, "start": 15, "corner": 15, "oob": 0, "competing": 4, "tenacious": 4, "spurt": 10}, {"name": "Smart Angel", "stamina": 47, "speed": 22, "sharp": 24, "ac": 176, "start": 14, "corner": 3, "oob": 7, "competing": 8, "tenacious": 4, "spurt": 12}, {"name": "Speed Police", "stamina": 14, "speed": 49, "sharp": 29, "ac": 179, "start": 15, "corner": 3, "oob": 7, "competing": 8, "tenacious": 3, "spurt": 12}, {"name": "Spinifix", "stamina": 22, "speed": 27, "sharp": 44, "ac": 182, "start": 3, "corner": 8, "oob": 14, "competing": 7, "tenacious": 4, "spurt": 12}, {"name": "Strong Masha", "stamina": 39, "speed": 32, "sharp": 22, "ac": 233, "start": 14, "corner": 3, "oob": 7, "competing": 8, "tenacious": 4, "spurt": 12}, {"name": "Sunday Silence", "stamina": 31, "speed": 49, "sharp": 40, "ac": 211, "start": 9, "corner": 9, "oob": 8, "competing": 8, "tenacious": 8, "spurt": 9}, {"name": "Sunday Titan", "stamina": 12, "speed": 47, "sharp": 34, "ac": 172, "start": 13, "corner": 6, "oob": 5, "competing": 8, "tenacious": 4, "spurt": 12}, {"name": "Synchromesh", "stamina": 29, "speed": 17, "sharp": 47, "ac": 214, "start": 3, "corner": 8, "oob": 14, "competing": 7, "tenacious": 4, "spurt": 12}, {"name": "Tenka Taihei", "stamina": 49, "speed": 19, "sharp": 24, "ac": 32, "start": 3, "corner": 8, "oob": 14, "competing": 7, "tenacious": 4, "spurt": 12}, {"name": "Thunder Dolce", "stamina": 24, "speed": 47, "sharp": 22, "ac": 147, "start": 14, "corner": 3, "oob": 7, "competing": 8, "tenacious": 4, "spurt": 12}, {"name": "Timber Wolf", "stamina": 34, "speed": 41, "sharp": 19, "ac": 211, "start": 14, "corner": 3, "oob": 7, "competing": 6, "tenacious": 6, "spurt": 12}, {"name": "Tokai Teio", "stamina": 24, "speed": 41, "sharp": 45, "ac": 166, "start": 10, "corner": 6, "oob": 6, "competing": 10, "tenacious": 6, "spurt": 10}, {"name": "Tony Bin", "stamina": 43, "speed": 43, "sharp": 31, "ac": 102, "start": 6, "corner": 12, "oob": 7, "competing": 9, "tenacious": 13, "spurt": 3}, {"name": "Transwind", "stamina": 31, "speed": 45, "sharp": 22, "ac": 124, "start": 13, "corner": 4, "oob": 7, "competing": 8, "tenacious": 4, "spurt": 12}, {"name": "Treasure Box", "stamina": 34, "speed": 19, "sharp": 45, "ac": 166, "start": 8, "corner": 4, "oob": 3, "competing": 12, "tenacious": 10, "spurt": 11}, {"name": "Trick Power", "stamina": 19, "speed": 29, "sharp": 44, "ac": 223, "start": 3, "corner": 8, "oob": 13, "competing": 7, "tenacious": 3, "spurt": 12}, {"name": "Turf Cross", "stamina": 51, "speed": 25, "sharp": 27, "ac": 41, "start": 9, "corner": 4, "oob": 8, "competing": 9, "tenacious": 5, "spurt": 14}, {"name": "Turf Empire", "stamina": 24, "speed": 39, "sharp": 29, "ac": 44, "start": 12, "corner": 11, "oob": 8, "competing": 7, "tenacious": 6, "spurt": 4}, {"name": "Turf on Top", "stamina": 19, "speed": 47, "sharp": 27, "ac": 44, "start": 8, "corner": 3, "oob": 12, "competing": 7, "tenacious": 4, "spurt": 14}, {"name": "Vortex", "stamina": 39, "speed": 22, "sharp": 32, "ac": 217, "start": 7, "corner": 4, "oob": 9, "competing": 11, "tenacious": 12, "spurt": 5}, {"name": "White Noser", "stamina": 19, "speed": 34, "sharp": 39, "ac": 182, "start": 13, "corner": 4, "oob": 7, "competing": 8, "tenacious": 4, "spurt": 12}, {"name": "White Pepper", "stamina": 20, "speed": 25, "sharp": 56, "ac": 0, "start": 4, "corner": 5, "oob": 8, "competing": 9, "tenacious": 10, "spurt": 12}, {"name": "Wild Cat", "stamina": 22, "speed": 29, "sharp": 42, "ac": 255, "start": 15, "corner": 3, "oob": 6, "competing": 7, "tenacious": 5, "spurt": 12}, {"name": "Wind Blast", "stamina": 17, "speed": 49, "sharp": 27, "ac": 163, "start": 14, "corner": 3, "oob": 7, "competing": 8, "tenacious": 4, "spurt": 12}, {"name": "Winning Ticket", "stamina": 46, "speed": 30, "sharp": 30, "ac": 255, "start": 3, "corner": 8, "oob": 14, "competing": 7, "tenacious": 4, "spurt": 12}], "dams": [{"name": "Adorable", "stamina": 41, "speed": 26, "sharp": 20, "ac": 249, "start": 3, "corner": 4, "oob": 12, "competing": 14, "tenacious": 8, "spurt": 7}, {"name": "Alyssum", "stamina": 25, "speed": 16, "sharp": 45, "ac": 255, "start": 6, "corner": 6, "oob": 10, "competing": 10, "tenacious": 10, "spurt": 6}, {"name": "Antique Bulb", "stamina": 47, "speed": 19, "sharp": 17, "ac": 73, "start": 14, "corner": 3, "oob": 7, "competing": 8, "tenacious": 4, "spurt": 12}, {"name": "Beauty Mac", "stamina": 49, "speed": 26, "sharp": 23, "ac": 32, "start": 11, "corner": 6, "oob": 7, "competing": 8, "tenacious": 6, "spurt": 10}, {"name": "Beauty Ros\u00e9", "stamina": 40, "speed": 19, "sharp": 27, "ac": 153, "start": 14, "corner": 3, "oob": 10, "competing": 6, "tenacious": 4, "spurt": 11}, {"name": "Beria", "stamina": 20, "speed": 36, "sharp": 30, "ac": 73, "start": 13, "corner": 3, "oob": 8, "competing": 8, "tenacious": 3, "spurt": 13}, {"name": "Birthday Rose", "stamina": 22, "speed": 41, "sharp": 22, "ac": 163, "start": 14, "corner": 3, "oob": 8, "competing": 7, "tenacious": 4, "spurt": 12}, {"name": "Black Sapphire", "stamina": 37, "speed": 36, "sharp": 28, "ac": 41, "start": 2, "corner": 14, "oob": 5, "competing": 10, "tenacious": 3, "spurt": 14}, {"name": "Bungo Fuji", "stamina": 25, "speed": 37, "sharp": 22, "ac": 67, "start": 12, "corner": 4, "oob": 4, "competing": 4, "tenacious": 12, "spurt": 12}, {"name": "Candle Time", "stamina": 22, "speed": 27, "sharp": 42, "ac": 54, "start": 12, "corner": 12, "oob": 4, "competing": 4, "tenacious": 12, "spurt": 4}, {"name": "Catnip", "stamina": 30, "speed": 14, "sharp": 42, "ac": 70, "start": 14, "corner": 3, "oob": 7, "competing": 8, "tenacious": 4, "spurt": 12}, {"name": "Catuja", "stamina": 32, "speed": 19, "sharp": 45, "ac": 63, "start": 15, "corner": 15, "oob": 1, "competing": 1, "tenacious": 1, "spurt": 15}, {"name": "Christmas Mali", "stamina": 37, "speed": 24, "sharp": 25, "ac": 48, "start": 4, "corner": 15, "oob": 8, "competing": 7, "tenacious": 6, "spurt": 8}, {"name": "Chrome Sarah", "stamina": 32, "speed": 14, "sharp": 45, "ac": 38, "start": 3, "corner": 3, "oob": 13, "competing": 13, "tenacious": 3, "spurt": 13}, {"name": "Conkers", "stamina": 17, "speed": 26, "sharp": 42, "ac": 223, "start": 6, "corner": 4, "oob": 15, "competing": 7, "tenacious": 3, "spurt": 13}, {"name": "Dark Crimson", "stamina": 30, "speed": 16, "sharp": 40, "ac": 246, "start": 2, "corner": 14, "oob": 8, "competing": 8, "tenacious": 2, "spurt": 14}, {"name": "Daylily", "stamina": 22, "speed": 36, "sharp": 26, "ac": 44, "start": 13, "corner": 3, "oob": 6, "competing": 8, "tenacious": 5, "spurt": 13}, {"name": "Delphinium", "stamina": 47, "speed": 16, "sharp": 22, "ac": 32, "start": 3, "corner": 8, "oob": 14, "competing": 7, "tenacious": 4, "spurt": 12}, {"name": "Dia Solon", "stamina": 20, "speed": 49, "sharp": 27, "ac": 227, "start": 8, "corner": 5, "oob": 7, "competing": 10, "tenacious": 6, "spurt": 12}, {"name": "Euryops daisy", "stamina": 17, "speed": 21, "sharp": 47, "ac": 246, "start": 3, "corner": 5, "oob": 13, "competing": 7, "tenacious": 8, "spurt": 12}, {"name": "Fashion Book", "stamina": 20, "speed": 44, "sharp": 23, "ac": 108, "start": 13, "corner": 11, "oob": 12, "competing": 5, "tenacious": 5, "spurt": 2}, {"name": "Final Record", "stamina": 12, "speed": 46, "sharp": 27, "ac": 115, "start": 13, "corner": 10, "oob": 10, "competing": 5, "tenacious": 5, "spurt": 5}, {"name": "Flower Park", "stamina": 16, "speed": 42, "sharp": 37, "ac": 60, "start": 12, "corner": 8, "oob": 4, "competing": 8, "tenacious": 10, "spurt": 6}, {"name": "Gayser Gold", "stamina": 31, "speed": 18, "sharp": 45, "ac": 191, "start": 2, "corner": 11, "oob": 14, "competing": 11, "tenacious": 3, "spurt": 7}, {"name": "Groovia", "stamina": 20, "speed": 29, "sharp": 45, "ac": 118, "start": 5, "corner": 12, "oob": 9, "competing": 6, "tenacious": 11, "spurt": 5}, {"name": "Halychyban", "stamina": 26, "speed": 12, "sharp": 48, "ac": 54, "start": 13, "corner": 3, "oob": 8, "competing": 8, "tenacious": 4, "spurt": 12}, {"name": "Hanakomachi", "stamina": 45, "speed": 21, "sharp": 20, "ac": 153, "start": 9, "corner": 14, "oob": 6, "competing": 3, "tenacious": 6, "spurt": 10}, {"name": "Heart of Jay", "stamina": 12, "speed": 41, "sharp": 32, "ac": 76, "start": 6, "corner": 4, "oob": 7, "competing": 10, "tenacious": 12, "spurt": 9}, {"name": "Hishi Amazon", "stamina": 31, "speed": 32, "sharp": 44, "ac": 111, "start": 11, "corner": 8, "oob": 4, "competing": 9, "tenacious": 12, "spurt": 4}, {"name": "Hokkai Hanako", "stamina": 27, "speed": 11, "sharp": 45, "ac": 214, "start": 3, "corner": 7, "oob": 14, "competing": 7, "tenacious": 5, "spurt": 12}, {"name": "Holy Melody", "stamina": 20, "speed": 37, "sharp": 29, "ac": 153, "start": 3, "corner": 8, "oob": 13, "competing": 6, "tenacious": 6, "spurt": 12}, {"name": "I Faion", "stamina": 22, "speed": 27, "sharp": 40, "ac": 102, "start": 7, "corner": 3, "oob": 8, "competing": 14, "tenacious": 12, "spurt": 4}, {"name": "Lemon Balm", "stamina": 20, "speed": 56, "sharp": 22, "ac": 255, "start": 3, "corner": 8, "oob": 15, "competing": 7, "tenacious": 3, "spurt": 12}, {"name": "Lilac Sundae", "stamina": 45, "speed": 34, "sharp": 26, "ac": 169, "start": 10, "corner": 7, "oob": 4, "competing": 9, "tenacious": 9, "spurt": 9}, {"name": "Love Jay", "stamina": 20, "speed": 32, "sharp": 41, "ac": 47, "start": 11, "corner": 4, "oob": 7, "competing": 9, "tenacious": 5, "spurt": 12}, {"name": "Lucky Fellow", "stamina": 10, "speed": 39, "sharp": 30, "ac": 156, "start": 7, "corner": 3, "oob": 10, "competing": 10, "tenacious": 6, "spurt": 12}, {"name": "Luzita", "stamina": 31, "speed": 28, "sharp": 45, "ac": 127, "start": 6, "corner": 8, "oob": 10, "competing": 10, "tenacious": 8, "spurt": 6}, {"name": "Manhattan Lady", "stamina": 42, "speed": 29, "sharp": 15, "ac": 144, "start": 14, "corner": 3, "oob": 7, "competing": 8, "tenacious": 4, "spurt": 12}, {"name": "Manjushage", "stamina": 32, "speed": 16, "sharp": 37, "ac": 166, "start": 3, "corner": 14, "oob": 12, "competing": 7, "tenacious": 8, "spurt": 4}, {"name": "Maple Dancer", "stamina": 50, "speed": 30, "sharp": 11, "ac": 185, "start": 8, "corner": 6, "oob": 8, "competing": 8, "tenacious": 10, "spurt": 8}, {"name": "Maple Time", "stamina": 45, "speed": 19, "sharp": 25, "ac": 160, "start": 3, "corner": 6, "oob": 14, "competing": 8, "tenacious": 4, "spurt": 13}, {"name": "Mary Fair", "stamina": 29, "speed": 36, "sharp": 20, "ac": 188, "start": 2, "corner": 8, "oob": 14, "competing": 8, "tenacious": 4, "spurt": 12}, {"name": "Marzen Papillon", "stamina": 27, "speed": 11, "sharp": 47, "ac": 150, "start": 10, "corner": 10, "oob": 6, "competing": 6, "tenacious": 6, "spurt": 10}, {"name": "Medirolamone", "stamina": 26, "speed": 48, "sharp": 33, "ac": 211, "start": 8, "corner": 7, "oob": 9, "competing": 8, "tenacious": 7, "spurt": 9}, {"name": "Mermaid Champ", "stamina": 30, "speed": 39, "sharp": 17, "ac": 44, "start": 14, "corner": 3, "oob": 7, "competing": 8, "tenacious": 4, "spurt": 12}, {"name": "Miller's water", "stamina": 47, "speed": 26, "sharp": 12, "ac": 208, "start": 12, "corner": 10, "oob": 4, "competing": 10, "tenacious": 6, "spurt": 6}, {"name": "Miltonia", "stamina": 31, "speed": 28, "sharp": 39, "ac": 38, "start": 8, "corner": 3, "oob": 9, "competing": 10, "tenacious": 6, "spurt": 12}, {"name": "Naomi's Dream", "stamina": 42, "speed": 21, "sharp": 22, "ac": 96, "start": 4, "corner": 12, "oob": 4, "competing": 12, "tenacious": 4, "spurt": 12}, {"name": "Nemophila", "stamina": 15, "speed": 46, "sharp": 25, "ac": 163, "start": 14, "corner": 3, "oob": 7, "competing": 8, "tenacious": 4, "spurt": 12}, {"name": "Nice Fashion", "stamina": 10, "speed": 54, "sharp": 30, "ac": 147, "start": 10, "corner": 9, "oob": 7, "competing": 7, "tenacious": 9, "spurt": 6}, {"name": "Nice, Nice, Nice", "stamina": 15, "speed": 54, "sharp": 25, "ac": 99, "start": 8, "corner": 7, "oob": 12, "competing": 13, "tenacious": 3, "spurt": 5}, {"name": "Nishino Flower", "stamina": 26, "speed": 41, "sharp": 33, "ac": 179, "start": 3, "corner": 8, "oob": 8, "competing": 7, "tenacious": 10, "spurt": 12}, {"name": "Orihime", "stamina": 25, "speed": 23, "sharp": 37, "ac": 255, "start": 5, "corner": 8, "oob": 5, "competing": 8, "tenacious": 8, "spurt": 14}, {"name": "Parficus", "stamina": 40, "speed": 29, "sharp": 31, "ac": 57, "start": 9, "corner": 8, "oob": 7, "competing": 9, "tenacious": 8, "spurt": 7}, {"name": "Peach Pop", "stamina": 45, "speed": 19, "sharp": 22, "ac": 176, "start": 12, "corner": 4, "oob": 12, "competing": 4, "tenacious": 4, "spurt": 12}, {"name": "Pianissimo", "stamina": 36, "speed": 18, "sharp": 30, "ac": 223, "start": 3, "corner": 14, "oob": 12, "competing": 7, "tenacious": 8, "spurt": 4}, {"name": "Pink Pearl", "stamina": 14, "speed": 63, "sharp": 14, "ac": 35, "start": 8, "corner": 7, "oob": 15, "competing": 6, "tenacious": 3, "spurt": 9}, {"name": "Powerful Girl", "stamina": 40, "speed": 29, "sharp": 21, "ac": 208, "start": 8, "corner": 7, "oob": 7, "competing": 8, "tenacious": 9, "spurt": 9}, {"name": "Pure Arpinus", "stamina": 20, "speed": 26, "sharp": 40, "ac": 79, "start": 11, "corner": 11, "oob": 11, "competing": 5, "tenacious": 5, "spurt": 5}, {"name": "Riverland", "stamina": 10, "speed": 44, "sharp": 32, "ac": 108, "start": 12, "corner": 12, "oob": 4, "competing": 4, "tenacious": 4, "spurt": 12}, {"name": "Saint Marie", "stamina": 40, "speed": 20, "sharp": 25, "ac": 112, "start": 14, "corner": 3, "oob": 7, "competing": 8, "tenacious": 4, "spurt": 12}, {"name": "Shinko Lovely", "stamina": 22, "speed": 32, "sharp": 44, "ac": 47, "start": 9, "corner": 8, "oob": 9, "competing": 8, "tenacious": 8, "spurt": 8}, {"name": "Silent Doll", "stamina": 27, "speed": 41, "sharp": 17, "ac": 252, "start": 12, "corner": 8, "oob": 2, "competing": 12, "tenacious": 2, "spurt": 12}, {"name": "Smart Success", "stamina": 22, "speed": 19, "sharp": 45, "ac": 79, "start": 1, "corner": 5, "oob": 6, "competing": 12, "tenacious": 12, "spurt": 12}, {"name": "Snow Sunset", "stamina": 17, "speed": 31, "sharp": 37, "ac": 182, "start": 12, "corner": 4, "oob": 4, "competing": 4, "tenacious": 12, "spurt": 12}, {"name": "Snow White", "stamina": 46, "speed": 30, "sharp": 23, "ac": 240, "start": 13, "corner": 11, "oob": 6, "competing": 7, "tenacious": 6, "spurt": 5}, {"name": "Snowflake", "stamina": 17, "speed": 44, "sharp": 25, "ac": 44, "start": 4, "corner": 4, "oob": 12, "competing": 12, "tenacious": 4, "spurt": 12}, {"name": "Speed Quinn", "stamina": 30, "speed": 19, "sharp": 41, "ac": 111, "start": 12, "corner": 7, "oob": 7, "competing": 7, "tenacious": 7, "spurt": 8}, {"name": "Spring Dress", "stamina": 42, "speed": 16, "sharp": 27, "ac": 41, "start": 12, "corner": 4, "oob": 12, "competing": 4, "tenacious": 12, "spurt": 4}, {"name": "Spring Gal", "stamina": 37, "speed": 29, "sharp": 20, "ac": 255, "start": 14, "corner": 3, "oob": 7, "competing": 8, "tenacious": 4, "spurt": 12}, {"name": "Stargazer", "stamina": 33, "speed": 30, "sharp": 31, "ac": 64, "start": 14, "corner": 3, "oob": 7, "competing": 8, "tenacious": 4, "spurt": 12}, {"name": "Strange Beat", "stamina": 15, "speed": 39, "sharp": 32, "ac": 51, "start": 3, "corner": 8, "oob": 14, "competing": 7, "tenacious": 4, "spurt": 12}, {"name": "Strawberry Jam", "stamina": 45, "speed": 34, "sharp": 10, "ac": 105, "start": 12, "corner": 3, "oob": 8, "competing": 9, "tenacious": 4, "spurt": 12}, {"name": "Strong Daughter", "stamina": 47, "speed": 24, "sharp": 15, "ac": 48, "start": 15, "corner": 10, "oob": 1, "competing": 4, "tenacious": 10, "spurt": 8}, {"name": "Strong Theme", "stamina": 20, "speed": 39, "sharp": 27, "ac": 220, "start": 3, "corner": 8, "oob": 12, "competing": 9, "tenacious": 4, "spurt": 12}, {"name": "Summer Symbols", "stamina": 22, "speed": 33, "sharp": 33, "ac": 239, "start": 9, "corner": 5, "oob": 7, "competing": 8, "tenacious": 5, "spurt": 14}, {"name": "Sweet Heart", "stamina": 22, "speed": 16, "sharp": 47, "ac": 175, "start": 14, "corner": 3, "oob": 7, "competing": 8, "tenacious": 4, "spurt": 12}, {"name": "Sweet Lady", "stamina": 20, "speed": 44, "sharp": 27, "ac": 124, "start": 10, "corner": 8, "oob": 6, "competing": 8, "tenacious": 4, "spurt": 12}, {"name": "Takanenadeshiko", "stamina": 40, "speed": 31, "sharp": 15, "ac": 160, "start": 4, "corner": 4, "oob": 12, "competing": 4, "tenacious": 12, "spurt": 12}, {"name": "Tee Tee Girl", "stamina": 20, "speed": 26, "sharp": 55, "ac": 182, "start": 2, "corner": 8, "oob": 11, "competing": 6, "tenacious": 10, "spurt": 11}, {"name": "Uliwaka", "stamina": 15, "speed": 40, "sharp": 30, "ac": 115, "start": 12, "corner": 12, "oob": 4, "competing": 4, "tenacious": 4, "spurt": 12}, {"name": "Velvet Bambu", "stamina": 41, "speed": 33, "sharp": 16, "ac": 121, "start": 7, "corner": 9, "oob": 12, "competing": 9, "tenacious": 6, "spurt": 5}, {"name": "White Venus", "stamina": 45, "speed": 24, "sharp": 17, "ac": 41, "start": 3, "corner": 12, "oob": 13, "competing": 4, "tenacious": 4, "spurt": 12}]}, "revC": {"sires": [{"name": "Allez Milord", "stamina": 44, "speed": 33, "sharp": 30, "ac": 169, "start": 14, "corner": 3, "oob": 7, "competing": 8, "tenacious": 4, "spurt": 14}, {"name": "Banana Boy", "stamina": 25, "speed": 37, "sharp": 40, "ac": 131, "start": 10, "corner": 6, "oob": 3, "competing": 6, "tenacious": 14, "spurt": 11}, {"name": "Battle Savior", "stamina": 49, "speed": 29, "sharp": 14, "ac": 208, "start": 15, "corner": 3, "oob": 7, "competing": 7, "tenacious": 3, "spurt": 15}, {"name": "Big Blizzard", "stamina": 33, "speed": 37, "sharp": 30, "ac": 166, "start": 8, "corner": 7, "oob": 7, "competing": 8, "tenacious": 14, "spurt": 6}, {"name": "Big Man", "stamina": 30, "speed": 49, "sharp": 41, "ac": 221, "start": 12, "corner": 6, "oob": 6, "competing": 8, "tenacious": 8, "spurt": 12}, {"name": "Brighton Rock", "stamina": 47, "speed": 24, "sharp": 22, "ac": 153, "start": 2, "corner": 10, "oob": 15, "competing": 7, "tenacious": 4, "spurt": 12}, {"name": "Broadway Dreu", "stamina": 30, "speed": 36, "sharp": 37, "ac": 118, "start": 8, "corner": 8, "oob": 10, "competing": 8, "tenacious": 8, "spurt": 8}, {"name": "Brocco", "stamina": 29, "speed": 38, "sharp": 48, "ac": 170, "start": 8, "corner": 7, "oob": 10, "competing": 9, "tenacious": 7, "spurt": 9}, {"name": "Bubble Boy", "stamina": 30, "speed": 31, "sharp": 41, "ac": 252, "start": 8, "corner": 12, "oob": 8, "competing": 8, "tenacious": 4, "spurt": 11}, {"name": "Bullion", "stamina": 28, "speed": 34, "sharp": 28, "ac": 201, "start": 11, "corner": 7, "oob": 7, "competing": 11, "tenacious": 11, "spurt": 3}, {"name": "Carnegie", "stamina": 40, "speed": 33, "sharp": 30, "ac": 99, "start": 8, "corner": 12, "oob": 6, "competing": 6, "tenacious": 9, "spurt": 9}, {"name": "Cherry Song", "stamina": 37, "speed": 30, "sharp": 39, "ac": 142, "start": 5, "corner": 11, "oob": 7, "competing": 7, "tenacious": 8, "spurt": 12}, {"name": "City Commandant", "stamina": 40, "speed": 45, "sharp": 40, "ac": 0, "start": 15, "corner": 1, "oob": 15, "competing": 1, "tenacious": 15, "spurt": 1}, {"name": "Clashing Hero", "stamina": 19, "speed": 41, "sharp": 46, "ac": 106, "start": 14, "corner": 8, "oob": 3, "competing": 10, "tenacious": 5, "spurt": 10}, {"name": "Commander in Charge", "stamina": 30, "speed": 45, "sharp": 25, "ac": 135, "start": 14, "corner": 9, "oob": 6, "competing": 5, "tenacious": 10, "spurt": 6}, {"name": "Concorde", "stamina": 30, "speed": 28, "sharp": 44, "ac": 87, "start": 9, "corner": 7, "oob": 3, "competing": 8, "tenacious": 8, "spurt": 15}, {"name": "Dancing Boy", "stamina": 54, "speed": 35, "sharp": 26, "ac": 249, "start": 6, "corner": 6, "oob": 10, "competing": 11, "tenacious": 6, "spurt": 11}, {"name": "Dark Victor", "stamina": 39, "speed": 34, "sharp": 19, "ac": 64, "start": 14, "corner": 3, "oob": 7, "competing": 8, "tenacious": 6, "spurt": 12}, {"name": "Darkside", "stamina": 23, "speed": 16, "sharp": 45, "ac": 63, "start": 3, "corner": 3, "oob": 14, "competing": 7, "tenacious": 8, "spurt": 14}, {"name": "Devil Stinger", "stamina": 12, "speed": 42, "sharp": 45, "ac": 168, "start": 9, "corner": 10, "oob": 5, "competing": 9, "tenacious": 5, "spurt": 12}, {"name": "Dream Well", "stamina": 32, "speed": 25, "sharp": 49, "ac": 127, "start": 3, "corner": 8, "oob": 14, "competing": 7, "tenacious": 4, "spurt": 14}, {"name": "Dynamite Boy", "stamina": 42, "speed": 19, "sharp": 32, "ac": 57, "start": 14, "corner": 3, "oob": 7, "competing": 9, "tenacious": 4, "spurt": 13}, {"name": "Dynamite Duke", "stamina": 38, "speed": 40, "sharp": 22, "ac": 153, "start": 15, "corner": 9, "oob": 5, "competing": 6, "tenacious": 14, "spurt": 1}, {"name": "El Condor Pasa", "stamina": 27, "speed": 36, "sharp": 45, "ac": 252, "start": 8, "corner": 9, "oob": 5, "competing": 8, "tenacious": 9, "spurt": 12}, {"name": "End Sweep", "stamina": 34, "speed": 36, "sharp": 30, "ac": 136, "start": 12, "corner": 8, "oob": 3, "competing": 6, "tenacious": 15, "spurt": 6}, {"name": "Flash Point", "stamina": 40, "speed": 41, "sharp": 37, "ac": 232, "start": 9, "corner": 9, "oob": 8, "competing": 9, "tenacious": 8, "spurt": 10}, {"name": "Football Hero", "stamina": 38, "speed": 24, "sharp": 40, "ac": 169, "start": 5, "corner": 10, "oob": 9, "competing": 9, "tenacious": 12, "spurt": 5}, {"name": "French Deputy", "stamina": 28, "speed": 48, "sharp": 34, "ac": 67, "start": 10, "corner": 9, "oob": 6, "competing": 6, "tenacious": 9, "spurt": 10}, {"name": "Fujiyama", "stamina": 31, "speed": 43, "sharp": 36, "ac": 172, "start": 6, "corner": 6, "oob": 8, "competing": 8, "tenacious": 11, "spurt": 11}, {"name": "Glass Glider", "stamina": 30, "speed": 50, "sharp": 35, "ac": 121, "start": 8, "corner": 8, "oob": 8, "competing": 8, "tenacious": 8, "spurt": 12}, {"name": "Glass Tiger", "stamina": 24, "speed": 52, "sharp": 29, "ac": 184, "start": 3, "corner": 12, "oob": 14, "competing": 8, "tenacious": 3, "spurt": 12}, {"name": "Golden Bomber", "stamina": 39, "speed": 22, "sharp": 32, "ac": 217, "start": 7, "corner": 4, "oob": 11, "competing": 11, "tenacious": 12, "spurt": 5}, {"name": "Golden Ruler", "stamina": 17, "speed": 46, "sharp": 32, "ac": 115, "start": 9, "corner": 7, "oob": 0, "competing": 15, "tenacious": 13, "spurt": 6}, {"name": "Grand Champion", "stamina": 32, "speed": 22, "sharp": 39, "ac": 111, "start": 10, "corner": 10, "oob": 2, "competing": 10, "tenacious": 10, "spurt": 8}, {"name": "Heart Lake", "stamina": 35, "speed": 27, "sharp": 33, "ac": 217, "start": 4, "corner": 8, "oob": 4, "competing": 12, "tenacious": 14, "spurt": 8}, {"name": "Hector Protector", "stamina": 27, "speed": 50, "sharp": 31, "ac": 164, "start": 8, "corner": 10, "oob": 6, "competing": 8, "tenacious": 6, "spurt": 14}, {"name": "Helissio", "stamina": 24, "speed": 41, "sharp": 45, "ac": 166, "start": 10, "corner": 6, "oob": 6, "competing": 11, "tenacious": 6, "spurt": 11}, {"name": "Hitmaker", "stamina": 37, "speed": 40, "sharp": 37, "ac": 170, "start": 12, "corner": 8, "oob": 8, "competing": 8, "tenacious": 8, "spurt": 8}, {"name": "Iceberg", "stamina": 31, "speed": 27, "sharp": 38, "ac": 119, "start": 7, "corner": 7, "oob": 3, "competing": 7, "tenacious": 11, "spurt": 15}, {"name": "Jade Robbery", "stamina": 33, "speed": 31, "sharp": 42, "ac": 248, "start": 10, "corner": 9, "oob": 8, "competing": 10, "tenacious": 8, "spurt": 5}, {"name": "Jet Stream", "stamina": 52, "speed": 35, "sharp": 17, "ac": 156, "start": 5, "corner": 9, "oob": 9, "competing": 9, "tenacious": 12, "spurt": 7}, {"name": "Judge Angelucci", "stamina": 19, "speed": 34, "sharp": 39, "ac": 182, "start": 13, "corner": 4, "oob": 7, "competing": 10, "tenacious": 4, "spurt": 12}, {"name": "Kim's Dinner", "stamina": 22, "speed": 46, "sharp": 32, "ac": 76, "start": 10, "corner": 4, "oob": 4, "competing": 11, "tenacious": 11, "spurt": 10}, {"name": "King Kool", "stamina": 34, "speed": 12, "sharp": 48, "ac": 63, "start": 12, "corner": 12, "oob": 0, "competing": 9, "tenacious": 9, "spurt": 8}, {"name": "Maple Syrup", "stamina": 39, "speed": 19, "sharp": 34, "ac": 240, "start": 15, "corner": 3, "oob": 6, "competing": 10, "tenacious": 4, "spurt": 12}, {"name": "Marvelous King", "stamina": 25, "speed": 40, "sharp": 41, "ac": 136, "start": 12, "corner": 8, "oob": 9, "competing": 9, "tenacious": 4, "spurt": 8}, {"name": "Miami Beach", "stamina": 44, "speed": 19, "sharp": 29, "ac": 41, "start": 3, "corner": 10, "oob": 14, "competing": 7, "tenacious": 3, "spurt": 13}, {"name": "Northern Sheriff", "stamina": 30, "speed": 43, "sharp": 45, "ac": 140, "start": 6, "corner": 8, "oob": 11, "competing": 11, "tenacious": 9, "spurt": 6}, {"name": "Opera Singer", "stamina": 28, "speed": 39, "sharp": 37, "ac": 186, "start": 10, "corner": 10, "oob": 6, "competing": 5, "tenacious": 4, "spurt": 15}, {"name": "Outrigger", "stamina": 48, "speed": 33, "sharp": 18, "ac": 144, "start": 14, "corner": 3, "oob": 7, "competing": 10, "tenacious": 4, "spurt": 12}, {"name": "Pentire", "stamina": 24, "speed": 34, "sharp": 33, "ac": 133, "start": 9, "corner": 10, "oob": 7, "competing": 7, "tenacious": 8, "spurt": 10}, {"name": "Prime Jewel", "stamina": 0, "speed": 20, "sharp": 25, "ac": 56, "start": 4, "corner": 5, "oob": 8, "competing": 9, "tenacious": 10, "spurt": 14}, {"name": "Prime Suspect", "stamina": 51, "speed": 25, "sharp": 24, "ac": 202, "start": 6, "corner": 9, "oob": 9, "competing": 9, "tenacious": 14, "spurt": 3}, {"name": "Prime Time", "stamina": 30, "speed": 31, "sharp": 44, "ac": 118, "start": 6, "corner": 10, "oob": 7, "competing": 7, "tenacious": 8, "spurt": 12}, {"name": "Real Winner", "stamina": 22, "speed": 46, "sharp": 34, "ac": 163, "start": 15, "corner": 15, "oob": 2, "competing": 7, "tenacious": 1, "spurt": 10}, {"name": "Really Really Rich", "stamina": 19, "speed": 53, "sharp": 29, "ac": 183, "start": 9, "corner": 9, "oob": 9, "competing": 7, "tenacious": 9, "spurt": 7}, {"name": "Romantic Bay", "stamina": 29, "speed": 44, "sharp": 19, "ac": 236, "start": 6, "corner": 10, "oob": 11, "competing": 7, "tenacious": 6, "spurt": 12}, {"name": "Runaway", "stamina": 10, "speed": 50, "sharp": 45, "ac": 200, "start": 15, "corner": 4, "oob": 3, "competing": 14, "tenacious": 3, "spurt": 12}, {"name": "Scarecrow", "stamina": 41, "speed": 33, "sharp": 16, "ac": 160, "start": 12, "corner": 13, "oob": 0, "competing": 0, "tenacious": 13, "spurt": 12}, {"name": "Silent Commander", "stamina": 54, "speed": 32, "sharp": 18, "ac": 140, "start": 14, "corner": 3, "oob": 7, "competing": 8, "tenacious": 15, "spurt": 3}, {"name": "Silent Storm", "stamina": 14, "speed": 24, "sharp": 60, "ac": 246, "start": 1, "corner": 8, "oob": 15, "competing": 7, "tenacious": 6, "spurt": 13}, {"name": "Ski Patrol", "stamina": 43, "speed": 35, "sharp": 30, "ac": 88, "start": 8, "corner": 12, "oob": 6, "competing": 7, "tenacious": 7, "spurt": 10}, {"name": "Song Sung Blue", "stamina": 34, "speed": 33, "sharp": 33, "ac": 153, "start": 9, "corner": 9, "oob": 6, "competing": 9, "tenacious": 9, "spurt": 8}, {"name": "Special Holiday", "stamina": 36, "speed": 48, "sharp": 30, "ac": 236, "start": 4, "corner": 8, "oob": 12, "competing": 8, "tenacious": 8, "spurt": 12}, {"name": "Sunday Silence", "stamina": 31, "speed": 49, "sharp": 40, "ac": 216, "start": 9, "corner": 9, "oob": 8, "competing": 8, "tenacious": 8, "spurt": 11}, {"name": "Sunny Boy", "stamina": 28, "speed": 40, "sharp": 30, "ac": 152, "start": 15, "corner": 10, "oob": 2, "competing": 7, "tenacious": 9, "spurt": 7}, {"name": "Super Cross", "stamina": 29, "speed": 30, "sharp": 47, "ac": 151, "start": 5, "corner": 5, "oob": 14, "competing": 5, "tenacious": 9, "spurt": 12}, {"name": "Tan's Son", "stamina": 25, "speed": 35, "sharp": 41, "ac": 159, "start": 5, "corner": 6, "oob": 13, "competing": 9, "tenacious": 5, "spurt": 12}, {"name": "Thunder Boy", "stamina": 38, "speed": 36, "sharp": 26, "ac": 255, "start": 10, "corner": 10, "oob": 3, "competing": 5, "tenacious": 12, "spurt": 10}, {"name": "Thunder Wolf", "stamina": 24, "speed": 47, "sharp": 22, "ac": 147, "start": 14, "corner": 3, "oob": 7, "competing": 10, "tenacious": 4, "spurt": 12}, {"name": "Timber Country", "stamina": 25, "speed": 41, "sharp": 38, "ac": 153, "start": 10, "corner": 10, "oob": 5, "competing": 5, "tenacious": 6, "spurt": 14}, {"name": "Tiny Dancer", "stamina": 19, "speed": 29, "sharp": 44, "ac": 223, "start": 3, "corner": 10, "oob": 15, "competing": 7, "tenacious": 3, "spurt": 12}, {"name": "Tony Bin", "stamina": 43, "speed": 43, "sharp": 31, "ac": 214, "start": 7, "corner": 12, "oob": 7, "competing": 9, "tenacious": 14, "spurt": 3}, {"name": "Trick Master", "stamina": 30, "speed": 25, "sharp": 34, "ac": 118, "start": 6, "corner": 9, "oob": 10, "competing": 10, "tenacious": 9, "spurt": 6}, {"name": "Trust Me", "stamina": 31, "speed": 45, "sharp": 22, "ac": 124, "start": 13, "corner": 6, "oob": 7, "competing": 8, "tenacious": 4, "spurt": 12}, {"name": "Waajib", "stamina": 22, "speed": 27, "sharp": 44, "ac": 182, "start": 3, "corner": 8, "oob": 14, "competing": 7, "tenacious": 4, "spurt": 14}, {"name": "White Lion", "stamina": 50, "speed": 25, "sharp": 30, "ac": 107, "start": 7, "corner": 3, "oob": 7, "competing": 8, "tenacious": 15, "spurt": 10}, {"name": "White Muzzle", "stamina": 40, "speed": 29, "sharp": 30, "ac": 159, "start": 6, "corner": 9, "oob": 10, "competing": 10, "tenacious": 9, "spurt": 6}, {"name": "White Panther", "stamina": 35, "speed": 34, "sharp": 20, "ac": 133, "start": 12, "corner": 10, "oob": 6, "competing": 7, "tenacious": 6, "spurt": 9}, {"name": "White Snake", "stamina": 33, "speed": 30, "sharp": 40, "ac": 182, "start": 10, "corner": 11, "oob": 11, "competing": 6, "tenacious": 6, "spurt": 6}, {"name": "Wild Jaguar", "stamina": 46, "speed": 25, "sharp": 29, "ac": 154, "start": 11, "corner": 5, "oob": 7, "competing": 10, "tenacious": 6, "spurt": 11}, {"name": "Wild Sun", "stamina": 22, "speed": 29, "sharp": 42, "ac": 255, "start": 15, "corner": 3, "oob": 6, "competing": 7, "tenacious": 7, "spurt": 12}, {"name": "Winning Run", "stamina": 42, "speed": 29, "sharp": 29, "ac": 153, "start": 3, "corner": 8, "oob": 15, "competing": 7, "tenacious": 4, "spurt": 13}, {"name": "Zephyr Hills", "stamina": 28, "speed": 40, "sharp": 30, "ac": 185, "start": 10, "corner": 4, "oob": 4, "competing": 12, "tenacious": 12, "spurt": 8}], "dams": [{"name": "5th Avenue", "stamina": 22, "speed": 41, "sharp": 22, "ac": 163, "start": 15, "corner": 3, "oob": 8, "competing": 7, "tenacious": 4, "spurt": 13}, {"name": "Amazing Dream", "stamina": 40, "speed": 31, "sharp": 15, "ac": 160, "start": 4, "corner": 4, "oob": 14, "competing": 4, "tenacious": 12, "spurt": 12}, {"name": "Amazon Lady", "stamina": 30, "speed": 31, "sharp": 44, "ac": 111, "start": 11, "corner": 8, "oob": 4, "competing": 10, "tenacious": 13, "spurt": 4}, {"name": "Andromeda", "stamina": 32, "speed": 19, "sharp": 45, "ac": 63, "start": 15, "corner": 15, "oob": 1, "competing": 3, "tenacious": 1, "spurt": 15}, {"name": "Anniversary Rose", "stamina": 42, "speed": 21, "sharp": 22, "ac": 96, "start": 4, "corner": 13, "oob": 4, "competing": 13, "tenacious": 4, "spurt": 12}, {"name": "Antique Doll", "stamina": 30, "speed": 29, "sharp": 45, "ac": 118, "start": 5, "corner": 15, "oob": 9, "competing": 6, "tenacious": 11, "spurt": 5}, {"name": "Asian Tea", "stamina": 17, "speed": 44, "sharp": 25, "ac": 44, "start": 4, "corner": 4, "oob": 14, "competing": 12, "tenacious": 4, "spurt": 12}, {"name": "Beach Party", "stamina": 17, "speed": 26, "sharp": 42, "ac": 223, "start": 7, "corner": 5, "oob": 15, "competing": 7, "tenacious": 3, "spurt": 13}, {"name": "Black Cat", "stamina": 15, "speed": 40, "sharp": 30, "ac": 115, "start": 12, "corner": 14, "oob": 4, "competing": 4, "tenacious": 4, "spurt": 12}, {"name": "Black Lily", "stamina": 14, "speed": 63, "sharp": 14, "ac": 35, "start": 8, "corner": 7, "oob": 15, "competing": 7, "tenacious": 3, "spurt": 10}, {"name": "Black Sapphire", "stamina": 37, "speed": 36, "sharp": 28, "ac": 41, "start": 2, "corner": 15, "oob": 5, "competing": 10, "tenacious": 3, "spurt": 15}, {"name": "Break Your Heart", "stamina": 27, "speed": 41, "sharp": 17, "ac": 252, "start": 12, "corner": 8, "oob": 2, "competing": 14, "tenacious": 2, "spurt": 12}, {"name": "Brief Encounter", "stamina": 42, "speed": 29, "sharp": 15, "ac": 144, "start": 14, "corner": 3, "oob": 7, "competing": 10, "tenacious": 4, "spurt": 12}, {"name": "Butter Popcorn", "stamina": 30, "speed": 33, "sharp": 36, "ac": 253, "start": 8, "corner": 6, "oob": 6, "competing": 10, "tenacious": 8, "spurt": 12}, {"name": "Canadian Leaf", "stamina": 15, "speed": 39, "sharp": 32, "ac": 51, "start": 3, "corner": 8, "oob": 14, "competing": 7, "tenacious": 4, "spurt": 14}, {"name": "Candy Kane", "stamina": 10, "speed": 44, "sharp": 32, "ac": 108, "start": 12, "corner": 14, "oob": 4, "competing": 4, "tenacious": 4, "spurt": 12}, {"name": "Cherry", "stamina": 25, "speed": 30, "sharp": 46, "ac": 196, "start": 9, "corner": 6, "oob": 10, "competing": 6, "tenacious": 6, "spurt": 13}, {"name": "Christmas Tree", "stamina": 22, "speed": 16, "sharp": 47, "ac": 175, "start": 14, "corner": 3, "oob": 7, "competing": 8, "tenacious": 4, "spurt": 14}, {"name": "Cluster Amaryllis", "stamina": 32, "speed": 16, "sharp": 37, "ac": 166, "start": 3, "corner": 14, "oob": 13, "competing": 7, "tenacious": 8, "spurt": 5}, {"name": "Crazy Cat", "stamina": 43, "speed": 30, "sharp": 31, "ac": 197, "start": 10, "corner": 6, "oob": 9, "competing": 6, "tenacious": 10, "spurt": 9}, {"name": "Dark Crimson", "stamina": 30, "speed": 16, "sharp": 40, "ac": 246, "start": 2, "corner": 14, "oob": 8, "competing": 8, "tenacious": 2, "spurt": 14}, {"name": "Day Dreamer", "stamina": 36, "speed": 33, "sharp": 30, "ac": 93, "start": 8, "corner": 9, "oob": 4, "competing": 7, "tenacious": 12, "spurt": 10}, {"name": "Deep Trouble", "stamina": 30, "speed": 36, "sharp": 37, "ac": 187, "start": 8, "corner": 10, "oob": 8, "competing": 8, "tenacious": 4, "spurt": 12}, {"name": "Eastern Ruler", "stamina": 28, "speed": 30, "sharp": 45, "ac": 150, "start": 7, "corner": 5, "oob": 10, "competing": 7, "tenacious": 8, "spurt": 13}, {"name": "Famous Beatle", "stamina": 45, "speed": 34, "sharp": 10, "ac": 105, "start": 13, "corner": 3, "oob": 8, "competing": 9, "tenacious": 4, "spurt": 13}, {"name": "Ferranti's Folly", "stamina": 37, "speed": 29, "sharp": 20, "ac": 255, "start": 14, "corner": 3, "oob": 7, "competing": 10, "tenacious": 4, "spurt": 12}, {"name": "Final Record", "stamina": 47, "speed": 26, "sharp": 12, "ac": 208, "start": 14, "corner": 10, "oob": 4, "competing": 10, "tenacious": 6, "spurt": 6}, {"name": "First Fantasy", "stamina": 30, "speed": 19, "sharp": 41, "ac": 111, "start": 12, "corner": 7, "oob": 7, "competing": 7, "tenacious": 7, "spurt": 10}, {"name": "Flower Garden", "stamina": 16, "speed": 42, "sharp": 37, "ac": 60, "start": 12, "corner": 8, "oob": 4, "competing": 10, "tenacious": 10, "spurt": 6}, {"name": "Flower Lady", "stamina": 32, "speed": 38, "sharp": 30, "ac": 165, "start": 10, "corner": 7, "oob": 6, "competing": 10, "tenacious": 9, "spurt": 9}, {"name": "Flying Carpet", "stamina": 33, "speed": 35, "sharp": 33, "ac": 219, "start": 8, "corner": 9, "oob": 10, "competing": 8, "tenacious": 7, "spurt": 8}, {"name": "Happy Trails", "stamina": 33, "speed": 35, "sharp": 30, "ac": 151, "start": 12, "corner": 8, "oob": 3, "competing": 7, "tenacious": 13, "spurt": 7}, {"name": "Heart of Gold", "stamina": 12, "speed": 41, "sharp": 32, "ac": 140, "start": 6, "corner": 4, "oob": 7, "competing": 11, "tenacious": 14, "spurt": 10}, {"name": "Hey Jude", "stamina": 22, "speed": 36, "sharp": 26, "ac": 44, "start": 13, "corner": 3, "oob": 6, "competing": 8, "tenacious": 7, "spurt": 13}, {"name": "Hitmaker is Sega", "stamina": 33, "speed": 32, "sharp": 32, "ac": 183, "start": 10, "corner": 6, "oob": 5, "competing": 10, "tenacious": 14, "spurt": 5}, {"name": "Hollywood Hills", "stamina": 36, "speed": 42, "sharp": 32, "ac": 132, "start": 4, "corner": 8, "oob": 12, "competing": 12, "tenacious": 4, "spurt": 12}, {"name": "Holy Cow", "stamina": 29, "speed": 36, "sharp": 20, "ac": 188, "start": 2, "corner": 8, "oob": 15, "competing": 8, "tenacious": 4, "spurt": 13}, {"name": "Hot Chocolate", "stamina": 27, "speed": 40, "sharp": 38, "ac": 108, "start": 13, "corner": 6, "oob": 6, "competing": 7, "tenacious": 10, "spurt": 8}, {"name": "Ice Queen", "stamina": 30, "speed": 37, "sharp": 35, "ac": 135, "start": 8, "corner": 10, "oob": 10, "competing": 6, "tenacious": 4, "spurt": 12}, {"name": "Jupiter Queen", "stamina": 20, "speed": 44, "sharp": 27, "ac": 124, "start": 10, "corner": 8, "oob": 6, "competing": 8, "tenacious": 4, "spurt": 14}, {"name": "K.L. Hibiscus", "stamina": 45, "speed": 34, "sharp": 26, "ac": 169, "start": 10, "corner": 7, "oob": 4, "competing": 10, "tenacious": 10, "spurt": 10}, {"name": "L. A. Machinegun", "stamina": 33, "speed": 37, "sharp": 29, "ac": 119, "start": 9, "corner": 11, "oob": 10, "competing": 5, "tenacious": 8, "spurt": 7}, {"name": "Lemonade", "stamina": 20, "speed": 56, "sharp": 22, "ac": 255, "start": 3, "corner": 10, "oob": 15, "competing": 7, "tenacious": 3, "spurt": 12}, {"name": "Love\u00a0J", "stamina": 20, "speed": 32, "sharp": 41, "ac": 255, "start": 11, "corner": 4, "oob": 7, "competing": 9, "tenacious": 5, "spurt": 14}, {"name": "Lovely Run", "stamina": 22, "speed": 32, "sharp": 44, "ac": 47, "start": 9, "corner": 8, "oob": 9, "competing": 9, "tenacious": 8, "spurt": 9}, {"name": "Manhattan Lady", "stamina": 31, "speed": 18, "sharp": 45, "ac": 191, "start": 2, "corner": 11, "oob": 14, "competing": 13, "tenacious": 3, "spurt": 7}, {"name": "Marron Dream", "stamina": 23, "speed": 31, "sharp": 34, "ac": 119, "start": 6, "corner": 6, "oob": 7, "competing": 8, "tenacious": 14, "spurt": 9}, {"name": "Morning Glory", "stamina": 32, "speed": 33, "sharp": 32, "ac": 167, "start": 8, "corner": 12, "oob": 8, "competing": 7, "tenacious": 8, "spurt": 7}, {"name": "Mountain High", "stamina": 32, "speed": 40, "sharp": 33, "ac": 153, "start": 8, "corner": 12, "oob": 8, "competing": 8, "tenacious": 4, "spurt": 12}, {"name": "Naiomi's Dream", "stamina": 20, "speed": 26, "sharp": 40, "ac": 79, "start": 11, "corner": 11, "oob": 11, "competing": 6, "tenacious": 6, "spurt": 5}, {"name": "North Angel", "stamina": 22, "speed": 35, "sharp": 36, "ac": 123, "start": 12, "corner": 10, "oob": 5, "competing": 3, "tenacious": 9, "spurt": 12}, {"name": "Peach Girl", "stamina": 34, "speed": 36, "sharp": 40, "ac": 200, "start": 8, "corner": 10, "oob": 8, "competing": 8, "tenacious": 4, "spurt": 13}, {"name": "Pete O Pete", "stamina": 27, "speed": 11, "sharp": 47, "ac": 150, "start": 10, "corner": 12, "oob": 6, "competing": 6, "tenacious": 6, "spurt": 10}, {"name": "Pinch Hitter", "stamina": 40, "speed": 29, "sharp": 31, "ac": 57, "start": 9, "corner": 9, "oob": 7, "competing": 10, "tenacious": 8, "spurt": 7}, {"name": "Primrose", "stamina": 32, "speed": 39, "sharp": 32, "ac": 118, "start": 11, "corner": 10, "oob": 7, "competing": 3, "tenacious": 9, "spurt": 10}, {"name": "Princess", "stamina": 27, "speed": 25, "sharp": 38, "ac": 255, "start": 5, "corner": 8, "oob": 5, "competing": 9, "tenacious": 9, "spurt": 14}, {"name": "Race Ace", "stamina": 25, "speed": 40, "sharp": 31, "ac": 152, "start": 12, "corner": 8, "oob": 3, "competing": 6, "tenacious": 13, "spurt": 8}, {"name": "Red Tulip", "stamina": 50, "speed": 30, "sharp": 11, "ac": 185, "start": 8, "corner": 8, "oob": 6, "competing": 9, "tenacious": 9, "spurt": 10}, {"name": "Rose Tattoo", "stamina": 31, "speed": 30, "sharp": 38, "ac": 135, "start": 9, "corner": 11, "oob": 6, "competing": 7, "tenacious": 3, "spurt": 14}, {"name": "Shampoo & Conditioner", "stamina": 31, "speed": 28, "sharp": 39, "ac": 38, "start": 8, "corner": 3, "oob": 9, "competing": 11, "tenacious": 6, "spurt": 13}, {"name": "Silent Lady", "stamina": 22, "speed": 19, "sharp": 45, "ac": 79, "start": 1, "corner": 5, "oob": 6, "competing": 14, "tenacious": 12, "spurt": 12}, {"name": "Silent Night", "stamina": 20, "speed": 26, "sharp": 55, "ac": 182, "start": 2, "corner": 9, "oob": 11, "competing": 6, "tenacious": 11, "spurt": 11}, {"name": "Ski Tour", "stamina": 17, "speed": 31, "sharp": 37, "ac": 182, "start": 12, "corner": 6, "oob": 6, "competing": 10, "tenacious": 8, "spurt": 8}, {"name": "Sky Racer", "stamina": 32, "speed": 40, "sharp": 32, "ac": 153, "start": 11, "corner": 5, "oob": 5, "competing": 15, "tenacious": 9, "spurt": 5}, {"name": "Sky Rocket", "stamina": 20, "speed": 37, "sharp": 29, "ac": 153, "start": 3, "corner": 8, "oob": 13, "competing": 7, "tenacious": 7, "spurt": 12}, {"name": "Snow Flake", "stamina": 45, "speed": 24, "sharp": 17, "ac": 41, "start": 3, "corner": 12, "oob": 15, "competing": 4, "tenacious": 4, "spurt": 12}, {"name": "Snow White", "stamina": 46, "speed": 30, "sharp": 23, "ac": 240, "start": 15, "corner": 11, "oob": 6, "competing": 7, "tenacious": 6, "spurt": 5}, {"name": "Speed Queen", "stamina": 20, "speed": 36, "sharp": 30, "ac": 73, "start": 13, "corner": 3, "oob": 8, "competing": 10, "tenacious": 3, "spurt": 13}, {"name": "Spring Song", "stamina": 32, "speed": 14, "sharp": 45, "ac": 38, "start": 3, "corner": 3, "oob": 13, "competing": 15, "tenacious": 3, "spurt": 13}, {"name": "Star Light", "stamina": 33, "speed": 30, "sharp": 31, "ac": 64, "start": 14, "corner": 3, "oob": 7, "competing": 8, "tenacious": 4, "spurt": 14}, {"name": "Stingray", "stamina": 12, "speed": 46, "sharp": 27, "ac": 115, "start": 13, "corner": 10, "oob": 10, "competing": 6, "tenacious": 6, "spurt": 5}, {"name": "Strawberry Jam", "stamina": 30, "speed": 14, "sharp": 42, "ac": 70, "start": 14, "corner": 3, "oob": 7, "competing": 8, "tenacious": 4, "spurt": 14}, {"name": "Surf Rider", "stamina": 31, "speed": 45, "sharp": 24, "ac": 146, "start": 14, "corner": 3, "oob": 7, "competing": 10, "tenacious": 4, "spurt": 12}, {"name": "Sweet Lady", "stamina": 40, "speed": 19, "sharp": 27, "ac": 153, "start": 14, "corner": 3, "oob": 10, "competing": 6, "tenacious": 4, "spurt": 13}, {"name": "Sweet Surrender", "stamina": 34, "speed": 24, "sharp": 44, "ac": 220, "start": 5, "corner": 5, "oob": 6, "competing": 13, "tenacious": 13, "spurt": 8}, {"name": "Tak-oshay", "stamina": 32, "speed": 32, "sharp": 36, "ac": 135, "start": 11, "corner": 14, "oob": 3, "competing": 8, "tenacious": 3, "spurt": 13}, {"name": "Tender Lover", "stamina": 30, "speed": 38, "sharp": 25, "ac": 120, "start": 12, "corner": 8, "oob": 2, "competing": 8, "tenacious": 14, "spurt": 6}, {"name": "Top Skater", "stamina": 26, "speed": 44, "sharp": 32, "ac": 211, "start": 8, "corner": 7, "oob": 10, "competing": 9, "tenacious": 7, "spurt": 9}, {"name": "Velvet Turf", "stamina": 41, "speed": 33, "sharp": 16, "ac": 121, "start": 7, "corner": 10, "oob": 12, "competing": 10, "tenacious": 6, "spurt": 5}, {"name": "Victory Party", "stamina": 31, "speed": 28, "sharp": 29, "ac": 41, "start": 10, "corner": 10, "oob": 7, "competing": 7, "tenacious": 7, "spurt": 9}, {"name": "Viking Victory", "stamina": 35, "speed": 28, "sharp": 37, "ac": 153, "start": 3, "corner": 3, "oob": 6, "competing": 15, "tenacious": 8, "spurt": 15}, {"name": "Western Flower", "stamina": 26, "speed": 41, "sharp": 33, "ac": 179, "start": 3, "corner": 9, "oob": 9, "competing": 7, "tenacious": 10, "spurt": 12}, {"name": "White Venus", "stamina": 22, "speed": 27, "sharp": 42, "ac": 54, "start": 12, "corner": 13, "oob": 4, "competing": 5, "tenacious": 12, "spurt": 4}, {"name": "Wisteria", "stamina": 28, "speed": 40, "sharp": 32, "ac": 73, "start": 10, "corner": 13, "oob": 5, "competing": 6, "tenacious": 4, "spurt": 12}]}, "revD": {"sires": [{"name": "Banana Boy", "stamina": 25, "speed": 37, "sharp": 40, "ac": 131, "start": 10, "corner": 6, "oob": 3, "competing": 6, "tenacious": 14, "spurt": 11}, {"name": "Battle Savior", "stamina": 49, "speed": 29, "sharp": 14, "ac": 208, "start": 15, "corner": 3, "oob": 7, "competing": 7, "tenacious": 3, "spurt": 15}, {"name": "Ben O Matic", "stamina": 24, "speed": 34, "sharp": 33, "ac": 133, "start": 8, "corner": 8, "oob": 12, "competing": 6, "tenacious": 6, "spurt": 12}, {"name": "Bet the Rent", "stamina": 38, "speed": 37, "sharp": 45, "ac": 232, "start": 9, "corner": 9, "oob": 8, "competing": 9, "tenacious": 8, "spurt": 10}, {"name": "Big Blizzard", "stamina": 33, "speed": 37, "sharp": 30, "ac": 166, "start": 8, "corner": 7, "oob": 7, "competing": 8, "tenacious": 14, "spurt": 6}, {"name": "Big E", "stamina": 40, "speed": 30, "sharp": 45, "ac": 119, "start": 10, "corner": 6, "oob": 6, "competing": 11, "tenacious": 6, "spurt": 11}, {"name": "Big Man", "stamina": 30, "speed": 49, "sharp": 41, "ac": 221, "start": 12, "corner": 6, "oob": 6, "competing": 8, "tenacious": 8, "spurt": 12}, {"name": "Brighton Rock", "stamina": 47, "speed": 24, "sharp": 22, "ac": 153, "start": 2, "corner": 10, "oob": 15, "competing": 7, "tenacious": 4, "spurt": 12}, {"name": "Broadway Dreu", "stamina": 30, "speed": 36, "sharp": 37, "ac": 118, "start": 8, "corner": 8, "oob": 10, "competing": 8, "tenacious": 8, "spurt": 8}, {"name": "Bubble Boy", "stamina": 30, "speed": 31, "sharp": 41, "ac": 252, "start": 8, "corner": 12, "oob": 8, "competing": 8, "tenacious": 4, "spurt": 11}, {"name": "Bullion", "stamina": 28, "speed": 34, "sharp": 28, "ac": 201, "start": 11, "corner": 7, "oob": 7, "competing": 11, "tenacious": 11, "spurt": 3}, {"name": "Can't Teach Speed", "stamina": 20, "speed": 45, "sharp": 40, "ac": 153, "start": 14, "corner": 10, "oob": 3, "competing": 5, "tenacious": 6, "spurt": 12}, {"name": "Cash Me Out", "stamina": 25, "speed": 35, "sharp": 41, "ac": 118, "start": 12, "corner": 6, "oob": 13, "competing": 9, "tenacious": 5, "spurt": 6}, {"name": "Cherry Song", "stamina": 37, "speed": 30, "sharp": 39, "ac": 142, "start": 5, "corner": 11, "oob": 7, "competing": 7, "tenacious": 8, "spurt": 12}, {"name": "Clashing Hero", "stamina": 19, "speed": 41, "sharp": 46, "ac": 106, "start": 14, "corner": 8, "oob": 3, "competing": 10, "tenacious": 5, "spurt": 10}, {"name": "Commander in Charge", "stamina": 30, "speed": 45, "sharp": 25, "ac": 135, "start": 14, "corner": 9, "oob": 6, "competing": 5, "tenacious": 10, "spurt": 6}, {"name": "Dancing Boy", "stamina": 54, "speed": 35, "sharp": 26, "ac": 249, "start": 6, "corner": 6, "oob": 10, "competing": 11, "tenacious": 6, "spurt": 11}, {"name": "Dark Victor", "stamina": 39, "speed": 34, "sharp": 19, "ac": 64, "start": 14, "corner": 3, "oob": 7, "competing": 8, "tenacious": 6, "spurt": 12}, {"name": "Darkside", "stamina": 23, "speed": 16, "sharp": 45, "ac": 63, "start": 3, "corner": 3, "oob": 14, "competing": 7, "tenacious": 8, "spurt": 14}, {"name": "Devil Stinger", "stamina": 12, "speed": 42, "sharp": 45, "ac": 168, "start": 9, "corner": 10, "oob": 5, "competing": 9, "tenacious": 5, "spurt": 12}, {"name": "Drew's Due", "stamina": 35, "speed": 30, "sharp": 30, "ac": 255, "start": 10, "corner": 9, "oob": 9, "competing": 9, "tenacious": 9, "spurt": 4}, {"name": "Dust in your Eyes", "stamina": 43, "speed": 43, "sharp": 31, "ac": 204, "start": 11, "corner": 7, "oob": 7, "competing": 10, "tenacious": 3, "spurt": 12}, {"name": "Dynamite Boy", "stamina": 42, "speed": 19, "sharp": 32, "ac": 57, "start": 14, "corner": 3, "oob": 7, "competing": 9, "tenacious": 4, "spurt": 13}, {"name": "Dynamite Duke", "stamina": 38, "speed": 40, "sharp": 22, "ac": 153, "start": 15, "corner": 9, "oob": 5, "competing": 6, "tenacious": 14, "spurt": 1}, {"name": "Flash in the Pan", "stamina": 40, "speed": 45, "sharp": 40, "ac": 0, "start": 15, "corner": 11, "oob": 3, "competing": 3, "tenacious": 15, "spurt": 3}, {"name": "Flash Point", "stamina": 40, "speed": 41, "sharp": 37, "ac": 232, "start": 9, "corner": 9, "oob": 8, "competing": 9, "tenacious": 8, "spurt": 10}, {"name": "Football Hero", "stamina": 38, "speed": 24, "sharp": 40, "ac": 169, "start": 5, "corner": 10, "oob": 9, "competing": 9, "tenacious": 12, "spurt": 5}, {"name": "Fujiyama", "stamina": 31, "speed": 43, "sharp": 36, "ac": 172, "start": 6, "corner": 6, "oob": 8, "competing": 8, "tenacious": 11, "spurt": 11}, {"name": "Glass Glider", "stamina": 30, "speed": 50, "sharp": 35, "ac": 121, "start": 8, "corner": 8, "oob": 8, "competing": 8, "tenacious": 8, "spurt": 12}, {"name": "Glass Tiger", "stamina": 24, "speed": 52, "sharp": 29, "ac": 184, "start": 3, "corner": 12, "oob": 14, "competing": 8, "tenacious": 3, "spurt": 12}, {"name": "Golden Bomber", "stamina": 39, "speed": 22, "sharp": 32, "ac": 217, "start": 7, "corner": 4, "oob": 11, "competing": 11, "tenacious": 12, "spurt": 5}, {"name": "Golden Ruler", "stamina": 17, "speed": 46, "sharp": 32, "ac": 115, "start": 9, "corner": 7, "oob": 0, "competing": 15, "tenacious": 13, "spurt": 6}, {"name": "Grand Champion", "stamina": 32, "speed": 22, "sharp": 39, "ac": 111, "start": 10, "corner": 10, "oob": 2, "competing": 10, "tenacious": 10, "spurt": 8}, {"name": "Green Bottle Lover", "stamina": 33, "speed": 31, "sharp": 42, "ac": 68, "start": 6, "corner": 8, "oob": 8, "competing": 12, "tenacious": 8, "spurt": 8}, {"name": "Haberdasher", "stamina": 40, "speed": 30, "sharp": 30, "ac": 154, "start": 8, "corner": 9, "oob": 6, "competing": 9, "tenacious": 12, "spurt": 6}, {"name": "Handsome Dave", "stamina": 22, "speed": 27, "sharp": 44, "ac": 107, "start": 14, "corner": 6, "oob": 10, "competing": 7, "tenacious": 9, "spurt": 4}, {"name": "He's a Fast Cat", "stamina": 32, "speed": 25, "sharp": 49, "ac": 127, "start": 3, "corner": 12, "oob": 12, "competing": 7, "tenacious": 4, "spurt": 12}, {"name": "He's da Boss", "stamina": 50, "speed": 30, "sharp": 25, "ac": 99, "start": 8, "corner": 7, "oob": 8, "competing": 6, "tenacious": 12, "spurt": 9}, {"name": "Hit Maker", "stamina": 37, "speed": 40, "sharp": 37, "ac": 170, "start": 12, "corner": 8, "oob": 8, "competing": 8, "tenacious": 8, "spurt": 8}, {"name": "House of Fire", "stamina": 30, "speed": 50, "sharp": 20, "ac": 171, "start": 9, "corner": 7, "oob": 3, "competing": 8, "tenacious": 15, "spurt": 8}, {"name": "Iceberg", "stamina": 31, "speed": 27, "sharp": 38, "ac": 119, "start": 7, "corner": 7, "oob": 3, "competing": 7, "tenacious": 11, "spurt": 15}, {"name": "It's About Time", "stamina": 31, "speed": 49, "sharp": 40, "ac": 216, "start": 9, "corner": 9, "oob": 8, "competing": 8, "tenacious": 8, "spurt": 11}, {"name": "Jet Stream", "stamina": 52, "speed": 35, "sharp": 17, "ac": 156, "start": 5, "corner": 9, "oob": 9, "competing": 9, "tenacious": 12, "spurt": 7}, {"name": "Jim's Gent", "stamina": 46, "speed": 26, "sharp": 33, "ac": 238, "start": 4, "corner": 4, "oob": 10, "competing": 12, "tenacious": 12, "spurt": 8}, {"name": "Kim's Dinner", "stamina": 22, "speed": 46, "sharp": 32, "ac": 76, "start": 10, "corner": 4, "oob": 4, "competing": 11, "tenacious": 11, "spurt": 10}, {"name": "King Kool", "stamina": 34, "speed": 12, "sharp": 48, "ac": 63, "start": 12, "corner": 12, "oob": 0, "competing": 9, "tenacious": 9, "spurt": 8}, {"name": "Ladies Man", "stamina": 34, "speed": 36, "sharp": 30, "ac": 200, "start": 15, "corner": 8, "oob": 3, "competing": 6, "tenacious": 6, "spurt": 12}, {"name": "Lighting Strikes", "stamina": 35, "speed": 45, "sharp": 45, "ac": 216, "start": 7, "corner": 7, "oob": 9, "competing": 9, "tenacious": 10, "spurt": 8}, {"name": "Magic Man", "stamina": 43, "speed": 40, "sharp": 35, "ac": 214, "start": 7, "corner": 12, "oob": 7, "competing": 9, "tenacious": 14, "spurt": 3}, {"name": "Malski", "stamina": 46, "speed": 3, "sharp": 34, "ac": 138, "start": 7, "corner": 7, "oob": 10, "competing": 10, "tenacious": 8, "spurt": 8}, {"name": "Maple Syrup", "stamina": 39, "speed": 19, "sharp": 34, "ac": 240, "start": 15, "corner": 3, "oob": 6, "competing": 10, "tenacious": 4, "spurt": 12}, {"name": "Marvelous King", "stamina": 25, "speed": 40, "sharp": 41, "ac": 136, "start": 12, "corner": 8, "oob": 9, "competing": 9, "tenacious": 4, "spurt": 8}, {"name": "Matty Man", "stamina": 30, "speed": 30, "sharp": 50, "ac": 68, "start": 10, "corner": 6, "oob": 6, "competing": 6, "tenacious": 8, "spurt": 14}, {"name": "Maverick", "stamina": 35, "speed": 35, "sharp": 40, "ac": 153, "start": 8, "corner": 9, "oob": 9, "competing": 8, "tenacious": 8, "spurt": 8}, {"name": "Miami Beach", "stamina": 44, "speed": 19, "sharp": 29, "ac": 41, "start": 3, "corner": 10, "oob": 14, "competing": 7, "tenacious": 3, "spurt": 13}, {"name": "Mr. Original", "stamina": 30, "speed": 43, "sharp": 45, "ac": 140, "start": 6, "corner": 8, "oob": 11, "competing": 11, "tenacious": 9, "spurt": 6}, {"name": "NJT", "stamina": 36, "speed": 48, "sharp": 30, "ac": 236, "start": 10, "corner": 8, "oob": 4, "competing": 8, "tenacious": 8, "spurt": 12}, {"name": "Opera Singer", "stamina": 28, "speed": 39, "sharp": 37, "ac": 186, "start": 10, "corner": 10, "oob": 6, "competing": 5, "tenacious": 4, "spurt": 15}, {"name": "Outrigger", "stamina": 48, "speed": 33, "sharp": 18, "ac": 144, "start": 14, "corner": 3, "oob": 7, "competing": 10, "tenacious": 4, "spurt": 12}, {"name": "Pierogi Prince", "stamina": 45, "speed": 40, "sharp": 40, "ac": 0, "start": 1, "corner": 1, "oob": 15, "competing": 15, "tenacious": 15, "spurt": 1}, {"name": "Prime Jewel", "stamina": 0, "speed": 20, "sharp": 25, "ac": 56, "start": 4, "corner": 5, "oob": 8, "competing": 9, "tenacious": 10, "spurt": 14}, {"name": "Prime Suspect", "stamina": 51, "speed": 25, "sharp": 24, "ac": 202, "start": 6, "corner": 9, "oob": 9, "competing": 9, "tenacious": 14, "spurt": 3}, {"name": "Prime Time", "stamina": 30, "speed": 31, "sharp": 44, "ac": 118, "start": 6, "corner": 10, "oob": 7, "competing": 7, "tenacious": 8, "spurt": 12}, {"name": "Real Winner", "stamina": 22, "speed": 46, "sharp": 34, "ac": 163, "start": 15, "corner": 15, "oob": 2, "competing": 7, "tenacious": 1, "spurt": 10}, {"name": "Really Really Rich", "stamina": 19, "speed": 53, "sharp": 29, "ac": 183, "start": 9, "corner": 9, "oob": 9, "competing": 7, "tenacious": 9, "spurt": 7}, {"name": "Romantic Bay", "stamina": 29, "speed": 44, "sharp": 19, "ac": 236, "start": 6, "corner": 10, "oob": 11, "competing": 7, "tenacious": 6, "spurt": 12}, {"name": "Rose Tide", "stamina": 29, "speed": 38, "sharp": 48, "ac": 85, "start": 8, "corner": 7, "oob": 9, "competing": 9, "tenacious": 6, "spurt": 11}, {"name": "Runaway", "stamina": 10, "speed": 50, "sharp": 45, "ac": 200, "start": 15, "corner": 4, "oob": 3, "competing": 14, "tenacious": 3, "spurt": 12}, {"name": "Runnin Rickie", "stamina": 33, "speed": 30, "sharp": 30, "ac": 169, "start": 8, "corner": 3, "oob": 14, "competing": 8, "tenacious": 14, "spurt": 5}, {"name": "Scarecrow", "stamina": 41, "speed": 33, "sharp": 16, "ac": 160, "start": 12, "corner": 13, "oob": 0, "competing": 0, "tenacious": 13, "spurt": 12}, {"name": "Shaken Not Stirred", "stamina": 50, "speed": 25, "sharp": 30, "ac": 185, "start": 10, "corner": 3, "oob": 7, "competing": 8, "tenacious": 12, "spurt": 10}, {"name": "Silent Commander", "stamina": 54, "speed": 32, "sharp": 18, "ac": 140, "start": 14, "corner": 3, "oob": 7, "competing": 8, "tenacious": 15, "spurt": 3}, {"name": "Silent Storm", "stamina": 14, "speed": 24, "sharp": 60, "ac": 246, "start": 1, "corner": 8, "oob": 15, "competing": 7, "tenacious": 6, "spurt": 13}, {"name": "Ski Patrol", "stamina": 43, "speed": 35, "sharp": 30, "ac": 88, "start": 8, "corner": 12, "oob": 6, "competing": 7, "tenacious": 7, "spurt": 10}, {"name": "Sunny Boy", "stamina": 28, "speed": 40, "sharp": 30, "ac": 152, "start": 15, "corner": 10, "oob": 2, "competing": 7, "tenacious": 9, "spurt": 7}, {"name": "Super Cross", "stamina": 29, "speed": 30, "sharp": 47, "ac": 151, "start": 5, "corner": 5, "oob": 14, "competing": 5, "tenacious": 9, "spurt": 12}, {"name": "Tak O Shay", "stamina": 45, "speed": 36, "sharp": 27, "ac": 252, "start": 8, "corner": 9, "oob": 10, "competing": 6, "tenacious": 5, "spurt": 12}, {"name": "The Rain Maker", "stamina": 30, "speed": 35, "sharp": 30, "ac": 140, "start": 10, "corner": 8, "oob": 8, "competing": 8, "tenacious": 9, "spurt": 9}, {"name": "Thunder Boy", "stamina": 38, "speed": 36, "sharp": 26, "ac": 255, "start": 10, "corner": 10, "oob": 3, "competing": 5, "tenacious": 12, "spurt": 10}, {"name": "Thunder Wolf", "stamina": 24, "speed": 47, "sharp": 22, "ac": 147, "start": 14, "corner": 3, "oob": 7, "competing": 10, "tenacious": 4, "spurt": 12}, {"name": "Tiny Dancer", "stamina": 19, "speed": 29, "sharp": 44, "ac": 223, "start": 3, "corner": 10, "oob": 15, "competing": 7, "tenacious": 3, "spurt": 12}, {"name": "Trick Master", "stamina": 30, "speed": 25, "sharp": 34, "ac": 118, "start": 6, "corner": 9, "oob": 10, "competing": 10, "tenacious": 9, "spurt": 6}, {"name": "Trust Me", "stamina": 31, "speed": 45, "sharp": 22, "ac": 124, "start": 13, "corner": 6, "oob": 7, "competing": 8, "tenacious": 4, "spurt": 12}, {"name": "Vinny", "stamina": 18, "speed": 38, "sharp": 40, "ac": 182, "start": 12, "corner": 3, "oob": 7, "competing": 8, "tenacious": 8, "spurt": 12}, {"name": "White Panther", "stamina": 35, "speed": 34, "sharp": 20, "ac": 133, "start": 12, "corner": 10, "oob": 6, "competing": 7, "tenacious": 6, "spurt": 9}, {"name": "Wild Jaguar", "stamina": 46, "speed": 25, "sharp": 29, "ac": 154, "start": 11, "corner": 5, "oob": 7, "competing": 10, "tenacious": 6, "spurt": 11}, {"name": "Wild Sun", "stamina": 22, "speed": 29, "sharp": 42, "ac": 255, "start": 15, "corner": 3, "oob": 6, "competing": 7, "tenacious": 7, "spurt": 12}, {"name": "Winning Run", "stamina": 42, "speed": 29, "sharp": 29, "ac": 153, "start": 3, "corner": 8, "oob": 15, "competing": 7, "tenacious": 4, "spurt": 13}, {"name": "Zephyr Hills", "stamina": 28, "speed": 40, "sharp": 30, "ac": 185, "start": 10, "corner": 4, "oob": 4, "competing": 12, "tenacious": 12, "spurt": 8}], "dams": [{"name": "16 Candles", "stamina": 26, "speed": 44, "sharp": 32, "ac": 211, "start": 8, "corner": 7, "oob": 10, "competing": 9, "tenacious": 7, "spurt": 9}, {"name": "5th Avenue", "stamina": 22, "speed": 41, "sharp": 22, "ac": 163, "start": 15, "corner": 3, "oob": 8, "competing": 7, "tenacious": 4, "spurt": 13}, {"name": "Amazing Dream", "stamina": 40, "speed": 31, "sharp": 15, "ac": 160, "start": 4, "corner": 4, "oob": 14, "competing": 4, "tenacious": 12, "spurt": 12}, {"name": "Andromeda", "stamina": 32, "speed": 19, "sharp": 45, "ac": 63, "start": 15, "corner": 15, "oob": 1, "competing": 3, "tenacious": 1, "spurt": 15}, {"name": "Anniversary Rose", "stamina": 42, "speed": 21, "sharp": 22, "ac": 96, "start": 4, "corner": 13, "oob": 4, "competing": 13, "tenacious": 4, "spurt": 12}, {"name": "Antique Doll", "stamina": 30, "speed": 29, "sharp": 45, "ac": 118, "start": 5, "corner": 15, "oob": 9, "competing": 6, "tenacious": 11, "spurt": 5}, {"name": "Apple of my Eye", "stamina": 17, "speed": 31, "sharp": 37, "ac": 182, "start": 12, "corner": 6, "oob": 6, "competing": 10, "tenacious": 8, "spurt": 8}, {"name": "Beach Party", "stamina": 17, "speed": 26, "sharp": 42, "ac": 223, "start": 7, "corner": 5, "oob": 15, "competing": 7, "tenacious": 3, "spurt": 13}, {"name": "Black Lily", "stamina": 14, "speed": 63, "sharp": 14, "ac": 35, "start": 8, "corner": 7, "oob": 15, "competing": 7, "tenacious": 3, "spurt": 10}, {"name": "Bloomin' Tulips", "stamina": 27, "speed": 41, "sharp": 17, "ac": 252, "start": 12, "corner": 8, "oob": 2, "competing": 14, "tenacious": 2, "spurt": 12}, {"name": "Braided Mane", "stamina": 35, "speed": 28, "sharp": 37, "ac": 153, "start": 3, "corner": 3, "oob": 6, "competing": 15, "tenacious": 8, "spurt": 15}, {"name": "Brief Encounter", "stamina": 42, "speed": 29, "sharp": 15, "ac": 144, "start": 14, "corner": 3, "oob": 7, "competing": 10, "tenacious": 4, "spurt": 12}, {"name": "Can't Stop Now", "stamina": 22, "speed": 36, "sharp": 26, "ac": 44, "start": 13, "corner": 3, "oob": 6, "competing": 8, "tenacious": 7, "spurt": 13}, {"name": "Cherry", "stamina": 25, "speed": 30, "sharp": 46, "ac": 196, "start": 9, "corner": 6, "oob": 10, "competing": 6, "tenacious": 6, "spurt": 13}, {"name": "Cherry on Top", "stamina": 17, "speed": 31, "sharp": 37, "ac": 182, "start": 12, "corner": 6, "oob": 6, "competing": 10, "tenacious": 8, "spurt": 8}, {"name": "Christmas Tree", "stamina": 22, "speed": 16, "sharp": 47, "ac": 175, "start": 14, "corner": 3, "oob": 7, "competing": 8, "tenacious": 4, "spurt": 14}, {"name": "Cluster Amaryllis", "stamina": 32, "speed": 16, "sharp": 37, "ac": 166, "start": 3, "corner": 14, "oob": 13, "competing": 7, "tenacious": 8, "spurt": 5}, {"name": "Crazy Cat", "stamina": 43, "speed": 30, "sharp": 31, "ac": 197, "start": 10, "corner": 6, "oob": 9, "competing": 6, "tenacious": 10, "spurt": 9}, {"name": "Cupcake", "stamina": 32, "speed": 38, "sharp": 30, "ac": 165, "start": 10, "corner": 7, "oob": 6, "competing": 10, "tenacious": 9, "spurt": 9}, {"name": "Cutie-Pie", "stamina": 40, "speed": 29, "sharp": 31, "ac": 57, "start": 9, "corner": 9, "oob": 7, "competing": 10, "tenacious": 8, "spurt": 7}, {"name": "Dark Crimson", "stamina": 30, "speed": 16, "sharp": 40, "ac": 246, "start": 2, "corner": 14, "oob": 8, "competing": 8, "tenacious": 2, "spurt": 14}, {"name": "Deep Trouble", "stamina": 30, "speed": 36, "sharp": 37, "ac": 187, "start": 8, "corner": 10, "oob": 8, "competing": 8, "tenacious": 4, "spurt": 12}, {"name": "Easy Street", "stamina": 46, "speed": 30, "sharp": 23, "ac": 240, "start": 15, "corner": 11, "oob": 6, "competing": 7, "tenacious": 6, "spurt": 5}, {"name": "Flying Carpet", "stamina": 33, "speed": 35, "sharp": 33, "ac": 219, "start": 8, "corner": 9, "oob": 10, "competing": 8, "tenacious": 7, "spurt": 8}, {"name": "Haley Bear", "stamina": 20, "speed": 26, "sharp": 55, "ac": 182, "start": 2, "corner": 9, "oob": 11, "competing": 6, "tenacious": 11, "spurt": 11}, {"name": "Haley's Comet", "stamina": 36, "speed": 33, "sharp": 30, "ac": 93, "start": 8, "corner": 9, "oob": 4, "competing": 7, "tenacious": 12, "spurt": 10}, {"name": "Heart of Gold", "stamina": 12, "speed": 41, "sharp": 32, "ac": 140, "start": 6, "corner": 4, "oob": 7, "competing": 11, "tenacious": 14, "spurt": 10}, {"name": "Heather Feather", "stamina": 37, "speed": 36, "sharp": 28, "ac": 41, "start": 2, "corner": 15, "oob": 5, "competing": 10, "tenacious": 3, "spurt": 15}, {"name": "Her Name's Anne", "stamina": 15, "speed": 40, "sharp": 30, "ac": 115, "start": 12, "corner": 14, "oob": 4, "competing": 4, "tenacious": 4, "spurt": 12}, {"name": "Hitmaker is Sega", "stamina": 33, "speed": 32, "sharp": 32, "ac": 183, "start": 10, "corner": 6, "oob": 5, "competing": 10, "tenacious": 14, "spurt": 5}, {"name": "Hollywood Hills", "stamina": 36, "speed": 42, "sharp": 32, "ac": 132, "start": 4, "corner": 8, "oob": 12, "competing": 12, "tenacious": 4, "spurt": 12}, {"name": "Holy Cow", "stamina": 29, "speed": 36, "sharp": 20, "ac": 188, "start": 2, "corner": 8, "oob": 15, "competing": 8, "tenacious": 4, "spurt": 13}, {"name": "Hot Chocolate", "stamina": 27, "speed": 40, "sharp": 38, "ac": 108, "start": 13, "corner": 6, "oob": 6, "competing": 7, "tenacious": 10, "spurt": 8}, {"name": "Jupiter Queen", "stamina": 20, "speed": 44, "sharp": 27, "ac": 124, "start": 10, "corner": 8, "oob": 6, "competing": 8, "tenacious": 4, "spurt": 14}, {"name": "Katherin the Great", "stamina": 45, "speed": 34, "sharp": 10, "ac": 105, "start": 13, "corner": 3, "oob": 8, "competing": 9, "tenacious": 4, "spurt": 13}, {"name": "Killer Queen", "stamina": 16, "speed": 42, "sharp": 37, "ac": 60, "start": 12, "corner": 8, "oob": 4, "competing": 10, "tenacious": 10, "spurt": 6}, {"name": "L. A. Machinegun", "stamina": 33, "speed": 37, "sharp": 29, "ac": 119, "start": 9, "corner": 11, "oob": 10, "competing": 5, "tenacious": 8, "spurt": 7}, {"name": "Lacey", "stamina": 32, "speed": 40, "sharp": 32, "ac": 153, "start": 11, "corner": 5, "oob": 5, "competing": 15, "tenacious": 9, "spurt": 5}, {"name": "Layin Back", "stamina": 30, "speed": 33, "sharp": 36, "ac": 253, "start": 8, "corner": 6, "oob": 6, "competing": 10, "tenacious": 8, "spurt": 12}, {"name": "Lemonade", "stamina": 20, "speed": 56, "sharp": 22, "ac": 255, "start": 3, "corner": 10, "oob": 15, "competing": 7, "tenacious": 3, "spurt": 12}, {"name": "Lock Heart", "stamina": 30, "speed": 31, "sharp": 44, "ac": 111, "start": 11, "corner": 8, "oob": 4, "competing": 10, "tenacious": 13, "spurt": 4}, {"name": "Love\u00a0J", "stamina": 20, "speed": 32, "sharp": 41, "ac": 255, "start": 11, "corner": 4, "oob": 7, "competing": 9, "tenacious": 5, "spurt": 14}, {"name": "Lovely Run", "stamina": 22, "speed": 32, "sharp": 44, "ac": 47, "start": 9, "corner": 8, "oob": 9, "competing": 9, "tenacious": 8, "spurt": 9}, {"name": "Lucky Laurie", "stamina": 34, "speed": 36, "sharp": 40, "ac": 200, "start": 8, "corner": 10, "oob": 8, "competing": 8, "tenacious": 4, "spurt": 13}, {"name": "Make a Move", "stamina": 46, "speed": 30, "sharp": 23, "ac": 240, "start": 15, "corner": 11, "oob": 6, "competing": 7, "tenacious": 6, "spurt": 5}, {"name": "Manhattan Lady", "stamina": 31, "speed": 18, "sharp": 45, "ac": 191, "start": 2, "corner": 11, "oob": 14, "competing": 13, "tenacious": 3, "spurt": 7}, {"name": "Marron Dream", "stamina": 23, "speed": 31, "sharp": 34, "ac": 119, "start": 6, "corner": 6, "oob": 7, "competing": 8, "tenacious": 14, "spurt": 9}, {"name": "Mind You Manners", "stamina": 50, "speed": 30, "sharp": 11, "ac": 185, "start": 8, "corner": 8, "oob": 6, "competing": 9, "tenacious": 9, "spurt": 10}, {"name": "Mountain High", "stamina": 32, "speed": 40, "sharp": 33, "ac": 153, "start": 8, "corner": 12, "oob": 8, "competing": 8, "tenacious": 4, "spurt": 12}, {"name": "Naiomi's Dream", "stamina": 20, "speed": 26, "sharp": 40, "ac": 79, "start": 11, "corner": 11, "oob": 11, "competing": 6, "tenacious": 6, "spurt": 5}, {"name": "North Angel", "stamina": 22, "speed": 35, "sharp": 36, "ac": 123, "start": 12, "corner": 10, "oob": 5, "competing": 3, "tenacious": 9, "spurt": 12}, {"name": "Pete O Pete", "stamina": 27, "speed": 11, "sharp": 47, "ac": 150, "start": 10, "corner": 12, "oob": 6, "competing": 6, "tenacious": 6, "spurt": 10}, {"name": "Pharos's Daughter", "stamina": 30, "speed": 37, "sharp": 35, "ac": 135, "start": 8, "corner": 10, "oob": 10, "competing": 6, "tenacious": 4, "spurt": 12}, {"name": "Pillow Mint", "stamina": 32, "speed": 33, "sharp": 32, "ac": 167, "start": 8, "corner": 12, "oob": 8, "competing": 7, "tenacious": 8, "spurt": 7}, {"name": "Pioneer Girl", "stamina": 40, "speed": 19, "sharp": 27, "ac": 153, "start": 14, "corner": 3, "oob": 10, "competing": 6, "tenacious": 4, "spurt": 13}, {"name": "Primrose", "stamina": 32, "speed": 39, "sharp": 32, "ac": 118, "start": 11, "corner": 10, "oob": 7, "competing": 3, "tenacious": 9, "spurt": 10}, {"name": "Princess", "stamina": 27, "speed": 25, "sharp": 38, "ac": 255, "start": 5, "corner": 8, "oob": 5, "competing": 9, "tenacious": 9, "spurt": 14}, {"name": "Queen Katie", "stamina": 30, "speed": 38, "sharp": 25, "ac": 120, "start": 12, "corner": 8, "oob": 2, "competing": 8, "tenacious": 14, "spurt": 6}, {"name": "Race Ace", "stamina": 25, "speed": 40, "sharp": 31, "ac": 152, "start": 12, "corner": 8, "oob": 3, "competing": 6, "tenacious": 13, "spurt": 8}, {"name": "Rendezvous", "stamina": 10, "speed": 44, "sharp": 32, "ac": 108, "start": 12, "corner": 14, "oob": 4, "competing": 4, "tenacious": 4, "spurt": 12}, {"name": "Rising Star", "stamina": 40, "speed": 19, "sharp": 27, "ac": 153, "start": 14, "corner": 3, "oob": 10, "competing": 6, "tenacious": 4, "spurt": 13}, {"name": "Root Beer Float", "stamina": 30, "speed": 38, "sharp": 25, "ac": 200, "start": 12, "corner": 8, "oob": 2, "competing": 8, "tenacious": 14, "spurt": 6}, {"name": "Rose Tattoo", "stamina": 31, "speed": 30, "sharp": 38, "ac": 135, "start": 9, "corner": 11, "oob": 6, "competing": 7, "tenacious": 3, "spurt": 14}, {"name": "Rose Wood", "stamina": 45, "speed": 34, "sharp": 26, "ac": 169, "start": 10, "corner": 7, "oob": 4, "competing": 10, "tenacious": 10, "spurt": 10}, {"name": "SaraBeara", "stamina": 37, "speed": 29, "sharp": 20, "ac": 255, "start": 14, "corner": 3, "oob": 7, "competing": 10, "tenacious": 4, "spurt": 12}, {"name": "Secret Wish", "stamina": 15, "speed": 39, "sharp": 32, "ac": 51, "start": 3, "corner": 8, "oob": 14, "competing": 7, "tenacious": 4, "spurt": 14}, {"name": "Shampoo & Conditioner", "stamina": 31, "speed": 28, "sharp": 39, "ac": 38, "start": 8, "corner": 3, "oob": 9, "competing": 11, "tenacious": 6, "spurt": 13}, {"name": "Shauna's Sunrise", "stamina": 30, "speed": 19, "sharp": 41, "ac": 111, "start": 12, "corner": 7, "oob": 7, "competing": 7, "tenacious": 7, "spurt": 10}, {"name": "She'saQuickChick", "stamina": 33, "speed": 35, "sharp": 30, "ac": 151, "start": 12, "corner": 8, "oob": 3, "competing": 7, "tenacious": 13, "spurt": 7}, {"name": "Silent Lady", "stamina": 22, "speed": 19, "sharp": 45, "ac": 79, "start": 1, "corner": 5, "oob": 6, "competing": 14, "tenacious": 12, "spurt": 12}, {"name": "Sky Rocket", "stamina": 20, "speed": 37, "sharp": 29, "ac": 153, "start": 3, "corner": 8, "oob": 13, "competing": 7, "tenacious": 7, "spurt": 12}, {"name": "Snow Flake", "stamina": 45, "speed": 24, "sharp": 17, "ac": 41, "start": 3, "corner": 12, "oob": 15, "competing": 4, "tenacious": 4, "spurt": 12}, {"name": "Speed Queen", "stamina": 20, "speed": 36, "sharp": 30, "ac": 73, "start": 13, "corner": 3, "oob": 8, "competing": 10, "tenacious": 3, "spurt": 13}, {"name": "Spring Song", "stamina": 32, "speed": 14, "sharp": 45, "ac": 38, "start": 3, "corner": 3, "oob": 13, "competing": 15, "tenacious": 3, "spurt": 13}, {"name": "Star Dust", "stamina": 28, "speed": 30, "sharp": 45, "ac": 150, "start": 7, "corner": 5, "oob": 10, "competing": 7, "tenacious": 8, "spurt": 13}, {"name": "Stingray", "stamina": 12, "speed": 46, "sharp": 27, "ac": 115, "start": 13, "corner": 10, "oob": 10, "competing": 6, "tenacious": 6, "spurt": 5}, {"name": "Strawberry Jam", "stamina": 30, "speed": 14, "sharp": 42, "ac": 70, "start": 14, "corner": 3, "oob": 7, "competing": 8, "tenacious": 4, "spurt": 14}, {"name": "Sundance", "stamina": 47, "speed": 26, "sharp": 12, "ac": 208, "start": 14, "corner": 10, "oob": 4, "competing": 10, "tenacious": 6, "spurt": 6}, {"name": "Surf Rider", "stamina": 31, "speed": 45, "sharp": 24, "ac": 146, "start": 14, "corner": 3, "oob": 7, "competing": 10, "tenacious": 4, "spurt": 12}, {"name": "Sweet Surrender", "stamina": 34, "speed": 24, "sharp": 44, "ac": 220, "start": 5, "corner": 5, "oob": 6, "competing": 13, "tenacious": 13, "spurt": 8}, {"name": "Tak-oshay", "stamina": 32, "speed": 32, "sharp": 36, "ac": 135, "start": 11, "corner": 14, "oob": 3, "competing": 8, "tenacious": 3, "spurt": 13}, {"name": "Trend Setter", "stamina": 17, "speed": 44, "sharp": 25, "ac": 44, "start": 4, "corner": 4, "oob": 14, "competing": 12, "tenacious": 4, "spurt": 12}, {"name": "Two Months Salary", "stamina": 20, "speed": 44, "sharp": 27, "ac": 124, "start": 10, "corner": 8, "oob": 6, "competing": 8, "tenacious": 4, "spurt": 14}, {"name": "Velvet Turf", "stamina": 41, "speed": 33, "sharp": 16, "ac": 121, "start": 7, "corner": 10, "oob": 12, "competing": 10, "tenacious": 6, "spurt": 5}, {"name": "Victory Party", "stamina": 31, "speed": 28, "sharp": 29, "ac": 41, "start": 10, "corner": 10, "oob": 7, "competing": 7, "tenacious": 7, "spurt": 9}, {"name": "Virginia Road", "stamina": 33, "speed": 30, "sharp": 31, "ac": 64, "start": 14, "corner": 3, "oob": 7, "competing": 8, "tenacious": 4, "spurt": 14}, {"name": "Western Flower", "stamina": 26, "speed": 41, "sharp": 33, "ac": 179, "start": 3, "corner": 9, "oob": 9, "competing": 7, "tenacious": 10, "spurt": 12}, {"name": "White Venus", "stamina": 22, "speed": 27, "sharp": 42, "ac": 54, "start": 12, "corner": 13, "oob": 4, "competing": 5, "tenacious": 12, "spurt": 4}, {"name": "Wisteria", "stamina": 28, "speed": 40, "sharp": 32, "ac": 73, "start": 10, "corner": 13, "oob": 5, "competing": 6, "tenacious": 4, "spurt": 12}]}};
+
+    let currentRevision = 'revD';
+    let currentMode = 'simple'; // simple | advanced
+    let lastNoPerfectAlertKey = '';
+
+    const BASE_BUCKETS = {
+      high: (v) => v >= 45,
+      mid:  (v) => v >= 35 && v <= 44,
+      low:  (v) => v <= 34
+    };
+
+    const SYM_BUCKETS = {
+      double: (v) => v >= 13 && v <= 15,
+      circle: (v) => v >= 9  && v <= 12,
+      tri:    (v) => v >= 5  && v <= 8,
+      x:      (v) => v >= 0  && v <= 4
+    };
+
+    function setNotice(message, type='info') {
+      const el = document.getElementById('notice');
+      if (!message) {
+        el.style.display = 'none';
+        el.textContent = '';
+        el.className = 'notice';
+        return;
+      }
+      el.style.display = 'block';
+      el.className = type === 'error' ? 'notice error' : 'notice';
+      el.innerHTML = message;
+    }
+
+    function showModal(bodyText) {
+      const overlay = document.getElementById('modalOverlay');
+      document.getElementById('modalBody').textContent = bodyText;
+      overlay.style.display = 'flex';
+      overlay.setAttribute('aria-hidden', 'false');
+    }
+    function closeModal() {
+      const overlay = document.getElementById('modalOverlay');
+      overlay.style.display = 'none';
+      overlay.setAttribute('aria-hidden', 'true');
+    }
+
+    function getSymbol(value) {
+      if (value >= 13) return { symbol: '◎', class: 'symbol-double' };
+      if (value >= 9)  return { symbol: '○', class: 'symbol-circle' };
+      if (value >= 5)  return { symbol: '△', class: 'symbol-triangle' };
+      return { symbol: '✕', class: 'symbol-x' };
+    }
+
+    function getACMeta(ac) {
+      if (ac === 255) return { cls: 'ac-max', label: 'Dirt Max' };
+      if (ac >= 213) return { cls: 'ac-dirtgood', label: 'Dirt Good' };
+      if (ac >= 150) return { cls: 'ac-dirt', label: 'Dirt Lean' };
+      if (ac >= 64)  return { cls: 'ac-mixed', label: 'Mixed' };
+      return { cls: 'ac-turf', label: 'Turf' };
+    }
+
+    function displayHorseStats(horse, elementId, title) {
+      const intStats = ['start', 'corner', 'oob', 'competing', 'tenacious', 'spurt'];
+      const labels = {
+        start: 'Start', corner: 'Corner', oob: 'Out of Box',
+        competing: 'Competing', tenacious: 'Tenacious', spurt: 'Spurt'
+      };
+      const acMeta = getACMeta(horse.ac);
+
+      let html = '<h3>' + title + ': ' + horse.name + '</h3>';
+      html += '<div style=\"text-align:center; color:#c9a227; font-family:\'Bebas Neue\', sans-serif; letter-spacing:2px; margin: 8px 0 6px;\">Horse Internal Stats</div>';
+      html += '<div class="stat-row"><span class="stat-name">Stamina</span><span class="stat-value"><span class="num">' + horse.stamina + '</span></span></div>';
+      html += '<div class="stat-row"><span class="stat-name">Speed</span><span class="stat-value"><span class="num">' + horse.speed + '</span></span></div>';
+      html += '<div class="stat-row"><span class="stat-name">Sharp</span><span class="stat-value"><span class="num">' + horse.sharp + '</span></span></div>';
+      html += '<div class="stat-row"><span class="stat-name">AC</span><span class="stat-value"><span class="num">' + horse.ac + '</span><span class="ac-badge ' + acMeta.cls + '">' + acMeta.label + '</span></span></div>';
+      html += '<div style="border-top: 2px solid rgba(201,162,39,0.3); margin: 12px 0 8px;"></div>';
+      html += '<div style="text-align:center; color:#c9a227; font-family:\'Bebas Neue\', sans-serif; letter-spacing:2px; margin: 0 0 6px;">Horse External Stats</div>';
+
+      intStats.forEach(stat => {
+        const sym = getSymbol(horse[stat]);
+        html += '<div class="stat-row"><span class="stat-name">' + labels[stat] + '</span><span class="stat-value"><span class="num">' + horse[stat] + '</span><span class="sym ' + sym.class + '">' + sym.symbol + '</span></span></div>';
+      });
+      document.getElementById(elementId).innerHTML = html;
+    }
+
+    function displayFoalResults(foal) {
+      const container = document.getElementById('foalResults');
+      container.className = 'foal-results';
+
+      const baseLabels = { stamina: 'Stamina', speed: 'Speed', sharp: 'Sharp', ac: 'AC' };
+      const intLabels = { start: 'Start', corner: 'Corner', oob: 'Out of Box', competing: 'Competing', tenacious: 'Tenacious', spurt: 'Spurt' };
+      const acMeta = getACMeta(foal.ac);
+
+      let html = '<h2>🐎 Foal Stats 🐎</h2>';
+      html += '<div class="section-title">Horse Internal Stats</div>';
+      html += '<div class="base-stats-grid">';
+      ['stamina','speed','sharp','ac'].forEach(stat => {
+        if (stat === 'ac') {
+          html += '<div class="stat-card"><div class="label">' + baseLabels[stat] + '</div><div class="value">' + foal[stat] + '</div><div class="subline"><span class="ac-badge ' + acMeta.cls + '">' + acMeta.label + '</span></div></div>';
+        } else {
+          html += '<div class="stat-card"><div class="label">' + baseLabels[stat] + '</div><div class="value">' + foal[stat] + '</div></div>';
+        }
+      });
+      html += '</div>';
+
+      html += '<div class="section-title">Horse External Stats</div>';
+      html += '<div class="internal-stats-grid">';
+      ['start','corner','oob','competing','tenacious','spurt'].forEach(stat => {
+        const sym = getSymbol(foal[stat]);
+        html += '<div class="stat-card"><div class="label">' + intLabels[stat] + '</div><div class="value">' + foal[stat] + '</div><div class="symbol ' + sym.class + '">' + sym.symbol + '</div></div>';
+      });
+      html += '</div>';
+
+      container.innerHTML = html;
+    }
+
+    function calculateFoal(sire, dam) {
+      const foal = {};
+      ['stamina','speed','sharp','ac','start','corner','oob','competing','tenacious','spurt'].forEach(stat => {
+        foal[stat] = Math.floor((sire[stat] + dam[stat]) / 2);
+      });
+      return foal;
+    }
+
+    function populateDropdowns(filteredSireIdxs=null, filteredDamIdxs=null) {
+      const data = gameData[currentRevision];
+      const sireSelect = document.getElementById('sireSelect');
+      const damSelect = document.getElementById('damSelect');
+
+      const currentSire = sireSelect.value;
+      const currentDam = damSelect.value;
+
+      const sireIdxs = filteredSireIdxs || data.sires.map((_, i) => i);
+      const damIdxs  = filteredDamIdxs  || data.dams.map((_, i) => i);
+
+      sireSelect.innerHTML = '<option value="">-- Choose a Sire --</option>';
+      damSelect.innerHTML  = '<option value="">-- Choose a Dam --</option>';
+
+      sireIdxs.forEach(i => {
+        const s = data.sires[i];
+        sireSelect.innerHTML += '<option value="' + i + '">' + s.name + '</option>';
+      });
+      damIdxs.forEach(i => {
+        const d = data.dams[i];
+        damSelect.innerHTML += '<option value="' + i + '">' + d.name + '</option>';
+      });
+
+      // try to preserve existing selections
+      if (currentSire && sireIdxs.includes(parseInt(currentSire, 10))) sireSelect.value = currentSire;
+      if (currentDam && damIdxs.includes(parseInt(currentDam, 10))) damSelect.value = currentDam;
+    }
+
+    function resetDisplays() {
+      document.getElementById('sireStats').innerHTML = '<h3>Sire Stats</h3><p style="text-align:center; color:#888; font-style:italic; padding: 20px 0;">Select a sire to view stats</p>';
+      document.getElementById('damStats').innerHTML = '<h3>Dam Stats</h3><p style="text-align:center; color:#888; font-style:italic; padding: 20px 0;">Select a dam to view stats</p>';
+      document.getElementById('foalResults').className = 'foal-results empty';
+      document.getElementById('foalResults').innerHTML = '<p>Select both a Sire and Dam to calculate foal stats</p>';
+    }
+
+    function getPrefs() {
+      return {
+        speed: document.getElementById('goalSpeed')?.value || 'any',
+        sharp: document.getElementById('goalSharp')?.value || 'any',
+        stamina: document.getElementById('goalStam')?.value || 'any',
+        ac: document.getElementById('goalAC')?.value || 'any',
+        symbols: {
+          start: document.getElementById('symStart')?.value || 'any',
+          corner: document.getElementById('symCorner')?.value || 'any',
+          oob: document.getElementById('symOob')?.value || 'any',
+          competing: document.getElementById('symComp')?.value || 'any',
+          tenacious: document.getElementById('symTen')?.value || 'any',
+          spurt: document.getElementById('symSpurt')?.value || 'any'
+        }
+      };
+    }
+
+    function countDesiredCriteria(prefs) {
+      let n = 0;
+      if (prefs.speed !== 'any') n++;
+      if (prefs.sharp !== 'any') n++;
+      if (prefs.stamina !== 'any') n++;
+      if (prefs.ac !== 'any') n++;
+      Object.values(prefs.symbols).forEach(v => { if (v !== 'any') n++; });
+      return n;
+    }
+
+    function meetsACGoal(ac, goal) {
+      if (goal === 'any') return true;
+      if (goal === 'turf') return ac <= 63;
+      if (goal === 'mixed') return ac >= 64 && ac <= 212;
+      if (goal === 'dirt') return ac >= 213 && ac <= 254;
+      if (goal === 'max') return ac === 255;
+      return true;
+    }
+
+    function scorePair(foal, prefs) {
+      let score = 0;
+      let total = 0;
+
+      // base
+      if (prefs.speed !== 'any') { total++; if (BASE_BUCKETS[prefs.speed](foal.speed)) score++; }
+      if (prefs.sharp !== 'any') { total++; if (BASE_BUCKETS[prefs.sharp](foal.sharp)) score++; }
+      if (prefs.stamina !== 'any') { total++; if (BASE_BUCKETS[prefs.stamina](foal.stamina)) score++; }
+
+      if (prefs.ac !== 'any') {
+        total++;
+        if (meetsACGoal(foal.ac, prefs.ac)) score++;
+      }
+
+      // internal symbols (exact buckets)
+      for (const [k, v] of Object.entries(prefs.symbols)) {
+        if (v === 'any') continue;
+        total++;
+        if (SYM_BUCKETS[v](foal[k])) score++;
+      }
+
+      return {score, total};
+    }
+
+    function buildRankedPairs(prefs) {
+      const data = gameData[currentRevision];
+      const ranked = [];
+      for (let s = 0; s < data.sires.length; s++) {
+        for (let d = 0; d < data.dams.length; d++) {
+          const foal = calculateFoal(data.sires[s], data.dams[d]);
+          const sc = scorePair(foal, prefs);
+          // tie-breaker: prioritize speed/sharp/stamina first, then AC, then sum internals
+          const tiebreak =
+            (foal.speed * 1000000) +
+            (foal.sharp * 10000) +
+            (foal.stamina * 100) +
+            (foal.ac) +
+            (foal.start + foal.corner + foal.oob + foal.competing + foal.tenacious + foal.spurt) / 1000;
+
+          ranked.push({
+            sireIdx: s,
+            damIdx: d,
+            foal,
+            score: sc.score,
+            total: sc.total,
+            tiebreak
+          });
+        }
+      }
+      ranked.sort((a,b) => (b.score - a.score) || (b.tiebreak - a.tiebreak));
+      return ranked;
+    }
+
+    function renderPairsTable(ranked, prefs) {
+      const el = document.getElementById('pairsTable');
+      const data = gameData[currentRevision];
+      const desired = countDesiredCriteria(prefs);
+
+      if (desired === 0) {
+        document.getElementById('pairsSub').textContent = 'Set one or more goals above to generate ranked breeding pairs.';
+        el.innerHTML = '<p style="text-align:center; color:#a0c4a0; padding: 14px 0;">No goals selected yet.</p>';
+        return;
+      }
+
+      const bestScore = ranked.length ? ranked[0].score : 0;
+      const perfect = ranked.filter(r => r.score === desired);
+      const show = ranked.slice(0, 25);
+
+      document.getElementById('pairsSub').innerHTML =
+        (perfect.length > 0)
+          ? ('Found <strong>' + perfect.length + '</strong> perfect matches. Showing top 25 by performance.')
+          : ('No perfect matches. Showing best matches by score (top 25).');
+
+      let html = '<table><thead><tr>' +
+        '<th>Score</th><th>Sire</th><th>Dam</th>' +
+        '<th class="mono">SP</th><th class="mono">SH</th><th class="mono">ST</th><th class="mono">AC</th>' +
+        '</tr></thead><tbody>';
+
+      show.forEach(r => {
+        const acMeta = getACMeta(r.foal.ac);
+        html += '<tr data-sire="' + r.sireIdx + '" data-dam="' + r.damIdx + '">' +
+          '<td><span class="scorepill">' + r.score + '/' + desired + '</span></td>' +
+          '<td>' + data.sires[r.sireIdx].name + '</td>' +
+          '<td>' + data.dams[r.damIdx].name + '</td>' +
+          '<td class="mono">' + r.foal.speed + '</td>' +
+          '<td class="mono">' + r.foal.sharp + '</td>' +
+          '<td class="mono">' + r.foal.stamina + '</td>' +
+          '<td class="mono">' + r.foal.ac + ' <span class="ac-badge ' + acMeta.cls + '">' + acMeta.label + '</span></td>' +
+          '</tr>';
+      });
+
+      html += '</tbody></table>';
+      el.innerHTML = html;
+
+      // row click sets dropdowns
+      el.querySelectorAll('tbody tr').forEach(tr => {
+        tr.addEventListener('click', () => {
+          const sireIdx = tr.getAttribute('data-sire');
+          const damIdx = tr.getAttribute('data-dam');
+          document.getElementById('sireSelect').value = sireIdx;
+          document.getElementById('damSelect').value = damIdx;
+          updateSelection();
+        });
+      });
+    }
+
+    function applyAdvancedFiltering() {
+      const prefs = getPrefs();
+      const desired = countDesiredCriteria(prefs);
+
+      if (desired === 0) {
+        // No goals: show full lists, no warnings
+        setNotice('', 'info');
+        populateDropdowns(null, null);
+        renderPairsTable([], prefs);
+        return;
+      }
+
+      const ranked = buildRankedPairs(prefs);
+      const bestScore = ranked.length ? ranked[0].score : 0;
+      const perfectCount = ranked.filter(r => r.score === desired).length;
+
+      // Shrink dropdowns to horses involved in BEST matches (score == bestScore)
+      const bestPairs = ranked.filter(r => r.score === bestScore);
+      const sireIdxs = Array.from(new Set(bestPairs.map(r => r.sireIdx))).sort((a,b) => a-b);
+      const damIdxs  = Array.from(new Set(bestPairs.map(r => r.damIdx))).sort((a,b) => a-b);
+
+      populateDropdowns(sireIdxs, damIdxs);
+
+      // Messaging & alert
+      if (perfectCount === 0) {
+        setNotice('<strong>No breeding pairs</strong> meet all selected goals. The sire/dam lists now show <strong>best matches</strong>. Adjust goals to widen results.', 'error');
+
+        const doAlert = document.getElementById('alertOnNoPerfect')?.checked;
+        const alertKey = currentRevision + '|' + JSON.stringify(prefs);
+        if (doAlert && alertKey !== lastNoPerfectAlertKey) {
+          showModal('No breeding pairs meet all selected goals. The tool is now showing the closest matches. Try loosening one or more goals (for example: drop one internal ◎, or change AC to Mixed).');
+          lastNoPerfectAlertKey = alertKey;
+        }
+      } else {
+        setNotice('Found <strong>' + perfectCount + '</strong> breeding pairs that meet all selected goals. The sire/dam lists are narrowed to the best matches.', 'info');
+      }
+
+      renderPairsTable(ranked, prefs);
+    }
+
+    function updateSelection() {
+      const data = gameData[currentRevision];
+      const sireIdx = document.getElementById('sireSelect').value;
+      const damIdx = document.getElementById('damSelect').value;
+
+      if (sireIdx !== '') displayHorseStats(data.sires[sireIdx], 'sireStats', 'Sire');
+      if (damIdx !== '') displayHorseStats(data.dams[damIdx], 'damStats', 'Dam');
+
+      if (sireIdx !== '' && damIdx !== '') {
+        const foal = calculateFoal(data.sires[sireIdx], data.dams[damIdx]);
+        displayFoalResults(foal);
+      }
+    }
+
+    function changeRevision() {
+      currentRevision = document.getElementById('revision').value;
+      if (!['revC','revD'].includes(currentRevision)) { currentRevision = 'revD'; document.getElementById('revision').value = 'revD'; }
+      const data = gameData[currentRevision];
+      document.getElementById('revisionInfo').textContent = data.sires.length + ' Sires / ' + data.dams.length + ' Dams';
+      resetDisplays();
+
+      // simple mode shows full lists; advanced mode uses filtering
+      if (currentMode === 'advanced') {
+        applyAdvancedFiltering();
+      } else {
+        setNotice('', 'info');
+        populateDropdowns(null, null);
+      }
+    }
+
+    function setMode(mode) {
+      currentMode = mode;
+      const tabSimple = document.getElementById('tabSimple');
+      const tabAdvanced = document.getElementById('tabAdvanced');
+      const adv = document.getElementById('modeAdvanced');
+
+      if (mode === 'advanced') {
+        tabSimple.classList.remove('active');
+        tabAdvanced.classList.add('active');
+        tabSimple.setAttribute('aria-selected', 'false');
+        tabAdvanced.setAttribute('aria-selected', 'true');
+        adv.style.display = 'block';
+        document.getElementById('tabHint').textContent = 'Advanced: set foal goals (Horse Internals: ST/SP/SH/AC + Horse Externals: symbols). Dropdowns shrink to best matches, and a ranked list appears.';
+        applyAdvancedFiltering();
+      } else {
+        tabAdvanced.classList.remove('active');
+        tabSimple.classList.add('active');
+        tabAdvanced.setAttribute('aria-selected', 'false');
+        tabSimple.setAttribute('aria-selected', 'true');
+        adv.style.display = 'none';
+        document.getElementById('tabHint').textContent = 'Simple: pick a sire and dam. Advanced: pick your breeding goals and see best matches.';
+        setNotice('', 'info');
+        populateDropdowns(null, null);
+      }
+      resetDisplays();
+    }
+
+    function resetGoals() {
+      const set = (id, v) => { const el = document.getElementById(id); if (el) el.value = v; };
+      set('goalSpeed', 'any');
+      set('goalSharp', 'any');
+      set('goalStam', 'any');
+      set('goalAC', 'any');
+      set('symStart', 'any');
+      set('symCorner', 'any');
+      set('symOob', 'any');
+      set('symComp', 'any');
+      set('symTen', 'any');
+      set('symSpurt', 'any');
+      lastNoPerfectAlertKey = '';
+      applyAdvancedFiltering();
+    }
+
+    // Wiring
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('revision').addEventListener('change', changeRevision);
+      document.getElementById('sireSelect').addEventListener('change', () => {
+        updateSelection();
+        if (currentMode === 'advanced') applyAdvancedFiltering();
+      });
+      document.getElementById('damSelect').addEventListener('change', () => {
+        updateSelection();
+        if (currentMode === 'advanced') applyAdvancedFiltering();
+      });
+
+      document.getElementById('tabSimple').addEventListener('click', () => setMode('simple'));
+      document.getElementById('tabAdvanced').addEventListener('click', () => setMode('advanced'));
+
+      document.getElementById('btnApplyFilters')?.addEventListener('click', applyAdvancedFiltering);
+      document.getElementById('btnResetFilters')?.addEventListener('click', resetGoals);
+
+      // apply filters on change (advanced)
+      ['goalSpeed','goalSharp','goalStam','goalAC','symStart','symCorner','symOob','symComp','symTen','symSpurt'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener('change', () => {
+          if (currentMode === 'advanced') applyAdvancedFiltering();
+        });
+      });
+
+      document.getElementById('modalOk').addEventListener('click', closeModal);
+      document.getElementById('modalOverlay').addEventListener('click', (e) => {
+        if (e.target && e.target.id === 'modalOverlay') closeModal();
+      });
+
+      // init
+      changeRevision();
+      populateDropdowns(null, null);
+    });
+  </script>
+</body>
+</html>
