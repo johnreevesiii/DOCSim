@@ -1,11 +1,26 @@
-C:\Users\johnr\Downloads\DOCSim-main (1)\DOCSim-main>\
-'\' is not recognized as an internal or external command,
-operable program or batch file.
-The argument 'C:\Users\johnr\Downloads\DOCSim-main (1)\DOCSim-main\Run-DOCSim.ps1' to the -File parameter does not exist. Provide the path to an existing '.ps1' file as an argument to the -File parameter.
-Windows PowerShell
-Copyright (C) Microsoft Corporation. All rights reserved.
+@echo off
+setlocal
+cd /d "%~dp0"
 
-Install the latest PowerShell for new features and improvements! https://aka.ms/PSWindows
+echo === DOCSim Launcher (Windows) ===
+echo.
 
-Press any key to continue . . .
+REM Prefer Windows Python launcher "py", fallback to "python"
+set "PYCMD="
+where py >nul 2>nul && set "PYCMD=py"
+if not defined PYCMD (
+  where python >nul 2>nul && set "PYCMD=python"
+)
 
+if not defined PYCMD (
+  echo Python was not found.
+  echo Install Python 3.9+ and check "Add Python to PATH" during install.
+  echo.
+  pause
+  exit /b 1
+)
+
+%PYCMD% main.py
+
+echo.
+pause
