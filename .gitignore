@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyd
+*.so
+*.egg-info/
+.dist/
+.build/
+.venv/
+venv/
+ENV/
+.env
+.env.*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# DOCSim runtime outputs
+data/records_state.json
+docsim_config.json
